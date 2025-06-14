@@ -2,7 +2,7 @@
 
 ## Sobre o Projeto
 
-Este é um projeto frontend para visualização de informações sobre postos de combustível, construído com Next.js, React e Chakra UI.
+Este é um projeto frontend para visualização de informações sobre postos de saúde, construído com Next.js, React e Chakra UI.
 
 ## Começando
 
