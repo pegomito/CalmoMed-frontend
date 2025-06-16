@@ -14,13 +14,13 @@ export default function LoginPage() {
     toaster.create({
       title: "Login realizado com sucesso!",
       description: `Bem-vindo, ${data.email}`,
-      status: "success",
+      type: "success",
     });
     
     // Redireciona para o lobby após 1 segundo
     setTimeout(() => {
       router.push('/Lobby');
-    }, 1000);
+    }, 2000);
   };
 
   const registerSuccess = () => {

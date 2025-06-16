@@ -1,36 +1,74 @@
 'use client';
-import { useState } from "react";
 import { Input, Button, Stack } from "@chakra-ui/react";
+import { useState } from "react";
 import { toaster } from "@/components/ui/toaster";
 
 export default function RegisterInput({ onRegisterSuccess }) {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    cpf: "",
+    username: "",
+    phone: "",
+    password: "",
+    email: "",
+    role: ""
+  });
 
-  const handleChange = (e) => {
+  const mudarInfo = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = () => {
-    if (!formData.email || !formData.password) {
-      toaster.create({
-        title: "Erro",
-        description: "Preencha todos os campos obrigatórios!",
-      });
-      return;
-    }
+  // Cadastro fictício, sem validação nem chamada ao backend
+  const cadastrarInfo = () => {
     toaster.create({
-      title: "Cadastro realizado!",
-      description: "Você pode fazer login agora.",
+      title: "Sucesso",
+      description: "Usuário cadastrado !",
+      type: "success",
     });
-    onRegisterSuccess();
+    onRegisterSuccess && onRegisterSuccess();
   };
 
-  return (
+  return (  
     <Stack spacing={4}>
+      <Input
+        name="name"
+        placeholder="Nome"
+        onChange={mudarInfo}
+        borderColor="white"
+        _placeholder={{ color: "white" }}
+      />
+      <Input
+        name="cpf"
+        placeholder="CPF"
+        onChange={mudarInfo}
+        borderColor="white"
+        _placeholder={{ color: "white" }}
+      />
+      <Input
+        name="username"
+        placeholder="Username"
+        onChange={mudarInfo}
+        borderColor="white"
+        _placeholder={{ color: "white" }}
+      />
+      <Input
+        name="phone"
+        placeholder="Telefone"
+        onChange={mudarInfo}
+        borderColor="white"
+        _placeholder={{ color: "white" }}
+      />
       <Input
         name="email"
         placeholder="E-mail"
-        onChange={handleChange}
+        onChange={mudarInfo}
+        borderColor="white"
+        _placeholder={{ color: "white" }}
+      />
+      <Input
+        name="role"
+        placeholder="Cargo (ex: admin, user)"
+        onChange={mudarInfo}
         borderColor="white"
         _placeholder={{ color: "white" }}
       />
@@ -38,11 +76,11 @@ export default function RegisterInput({ onRegisterSuccess }) {
         name="password"
         type="password"
         placeholder="Senha"
-        onChange={handleChange}
+        onChange={mudarInfo}
         borderColor="white"
         _placeholder={{ color: "white" }}
       />
-      <Button onClick={handleRegister} colorScheme="teal">
+      <Button onClick={cadastrarInfo} colorScheme="blue">
         Cadastrar
       </Button>
     </Stack>

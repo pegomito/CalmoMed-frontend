@@ -1,136 +1,119 @@
 'use client';
-import { Box, VStack, HStack, Text, Heading, Button } from "@chakra-ui/react";
-import { Tabs } from "@chakra-ui/react";
+import { Box, VStack, Heading, Button, Text } from "@chakra-ui/react";
+import { useState } from "react";
+import FixBar from "@/components/FixBar";
 
 export default function LobbyPage() {
+  const [sidebarSection, setSidebarSection] = useState("dashboard");
+
   return (
-    <Box w="100%" h="100vh" display="flex">
-      <Box
-        w="250px"
-        h="100vh"
-        bg="gray.800"
-        color="white"
-        position="fixed"
-        left="0"
-        top="0"
-        zIndex="1000"
-        p={4}
-        boxShadow="xl"
-      >
-        <VStack spacing={4} align="stretch">
-          <Heading size="md" color="teal.300" mb={4}>
-            Menu Principal
-          </Heading>
-          
-          <Button
-            variant="ghost"
-            justifyContent="flex-start"
-            color="white"
-            _hover={{ bg: "gray.700", color: "teal.300" }}
-          >
-            Dashboard
-          </Button>
-          
-          <Button
-            variant="ghost"
-            justifyContent="flex-start"
-            color="white"
-            _hover={{ bg: "gray.700", color: "teal.300" }}
-          >
-            Postos
-          </Button>
-          
-          <Button
-            variant="ghost"
-            justifyContent="flex-start"
-            color="white"
-            _hover={{ bg: "gray.700", color: "teal.300" }}
-          >
-            Relatórios
-          </Button>
-          
-          <Button
-            variant="ghost"
-            justifyContent="flex-start"
-            color="white"
-            _hover={{ bg: "gray.700", color: "teal.300" }}
-          >
-            Configurações
-          </Button>
-        </VStack>
-      </Box>
-
-      
-      <Box ml="250px" w="calc(100% - 250px)" h="100vh" background = {"rgb(192, 200, 202)"} p={6}>
-       
-        <Tabs.Root defaultValue="dashboard" variant="enclosed">
-          <Box bg="white" borderBottom="1px solid" borderColor="gray.200" px={4}>
-            <Tabs.List>
-              <Tabs.Trigger value="dashboard">
-                Dashboard
-              </Tabs.Trigger>
-              <Tabs.Trigger value="postos">
-                Postos
-              </Tabs.Trigger>
-              <Tabs.Trigger value="relatorios">
-                Relatórios
-              </Tabs.Trigger>
-              <Tabs.Trigger value="usuarios">
-                Usuários
-              </Tabs.Trigger>
-              <Tabs.Indicator />
-            </Tabs.List>
-          </Box>
-
-          <Box p={6}>
-            <Tabs.Content value="dashboard">
-              <VStack align="stretch" spacing={6}>
-                <Heading size="lg" color="gray.700">
+    <>
+      <FixBar />
+      <Box w="100%" h="100vh" display="flex">
+        <Box
+          w="250px"
+          h="calc(100vh - 80px)"
+          background="rgba(42, 44, 82, 0.8)"
+          color="white"
+          position="fixed"
+          left="0"
+          top="80px"
+          zIndex="1000"
+          p={4}
+          boxShadow="xl"
+        >
+          <VStack spacing={4} align="stretch">
+            <Heading textStyle= "2xl" color="teal.300" fontWeight={"bold"} mb={4}>
+              Menu Principal
+            </Heading>
+            <Button
+              size="lg"
+              variant={sidebarSection === "dashboard" ? "solid" : "ghost"}
+              justifyContent="flex-start"
+              color="white"
+              _hover={{ bg: "gray.700", color: "teal.300" }}
+              bg={sidebarSection === "dashboard" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("dashboard")}
+            >
+              Dashboard
+            </Button>
+            <Button
+              variant={sidebarSection === "postos" ? "solid" : "ghost"}
+              justifyContent="flex-start"
+              color="white"
+              _hover={{ bg: "gray.700", color: "teal.300" }}
+              bg={sidebarSection === "postos" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("postos")}
+            >
+              Postos
+            </Button>
+            <Button
+              variant={sidebarSection === "relatorios" ? "solid" : "ghost"}
+              justifyContent="flex-start"
+              color="white"
+              _hover={{ bg: "gray.700", color: "teal.300" }}
+              bg={sidebarSection === "relatorios" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("relatorios")}
+            >
+              Relatórios
+            </Button>
+            <Button
+              variant={sidebarSection === "usuarios" ? "solid" : "ghost"}
+              justifyContent="flex-start"
+              color="white"
+              _hover={{ bg: "gray.700", color: "teal.300" }}
+              bg={sidebarSection === "usuarios" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("usuarios")}
+            >
+              Configurações
+            </Button>
+          </VStack>
+        </Box>
+        <Box ml="250px" w="calc(100% - 250px)" h="100vh" background = {"rgb(192, 200, 202)"} p={6} mt="80px">
+          <Box bg="white" borderRadius="xl" p={8}  h="100%" display="flex" flexDirection="column" >
+            {sidebarSection === "dashboard" && (
+              <>
+                <Heading size="lg" color="gray.700" mb={4}>
                   Dashboard Principal
                 </Heading>
-                <Text color="gray.600">
+                <Text color="gray.600" fontSize="lg">
                   Bem-vindo ao sistema de gerenciamento de postos de saúde.
                 </Text>
-              </VStack>
-            </Tabs.Content>
-
-            <Tabs.Content value="postos">
-              <VStack align="stretch" spacing={6}>
-                <Heading size="lg" color="gray.700">
+              </>
+            )}
+            {sidebarSection === "postos" && (
+              <>
+                <Heading size="lg" color="gray.700" mb={4}>
                   Gerenciamento de Postos
                 </Heading>
-                <Text color="gray.600">
+                <Text color="gray.600" fontSize="lg">
                   Visualize e gerencie todos os postos de saúde cadastrados.
                 </Text>
-              </VStack>
-            </Tabs.Content>
-
-            <Tabs.Content value="relatorios">
-              <VStack align="stretch" spacing={6}>
-                <Heading size="lg" color="gray.700">
+              </>
+            )}
+            {sidebarSection === "relatorios" && (
+              <>
+                <Heading size="lg" color="gray.700" mb={4}>
                   Relatórios
                 </Heading>
-                <Text color="gray.600">
+                <Text color="gray.600" fontSize="lg">
                   Gere e visualize relatórios detalhados do sistema.
                 </Text>
-                {/* Relatórios aqui */}
-              </VStack>
-            </Tabs.Content>
-
-            <Tabs.Content value="usuarios">
-              <VStack align="stretch" spacing={6}>
-                <Heading size="lg" color="gray.700">
+              </>
+            )}
+            {sidebarSection === "usuarios" && (
+              <>
+                <Heading size="lg" color="gray.700" mb={4}>
                   Gestão de Usuários
                 </Heading>
-                <Text color="gray.600">
+                <Text color="gray.600" fontSize="lg">
                   Gerencie usuários e permissões do sistema.
                 </Text>
-                {/* Gestão de usuários aqui */}
-              </VStack>
-            </Tabs.Content>
+              </>
+            )}
           </Box>
-        </Tabs.Root>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
