@@ -22,22 +22,23 @@ export default function LobbyPage() {
           p={4}
           boxShadow="xl"
         >
-          <VStack spacing={4} align="stretch">
+          <VStack spacing={4} align="center">
             <Heading textStyle= "2xl" color="teal.300" fontWeight={"bold"} mb={4}>
               Menu Principal
             </Heading>
             <Button
-              size="lg"
-              variant={sidebarSection === "dashboard" ? "solid" : "ghost"}
+              textStyle= "lg"
+              variant={sidebarSection === "mapa" ? "solid" : "ghost"}
               justifyContent="flex-start"
               color="white"
               _hover={{ bg: "gray.700", color: "teal.300" }}
-              bg={sidebarSection === "dashboard" ? "teal.700" : undefined}
-              onClick={() => setSidebarSection("dashboard")}
+              bg={sidebarSection === "mapa" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("mapa")}
             >
-              Dashboard
+              Mapa
             </Button>
             <Button
+              textStyle= "lg"
               variant={sidebarSection === "postos" ? "solid" : "ghost"}
               justifyContent="flex-start"
               color="white"
@@ -48,16 +49,18 @@ export default function LobbyPage() {
               Postos
             </Button>
             <Button
-              variant={sidebarSection === "relatorios" ? "solid" : "ghost"}
+              textStyle= "lg"
+              variant={sidebarSection === "dashboard" ? "solid" : "ghost"}
               justifyContent="flex-start"
               color="white"
               _hover={{ bg: "gray.700", color: "teal.300" }}
-              bg={sidebarSection === "relatorios" ? "teal.700" : undefined}
-              onClick={() => setSidebarSection("relatorios")}
+              bg={sidebarSection === "dashboard" ? "teal.700" : undefined}
+              onClick={() => setSidebarSection("dashboard")}
             >
-              Relatórios
+              Dashboard
             </Button>
             <Button
+              textStyle= "lg"
               variant={sidebarSection === "usuarios" ? "solid" : "ghost"}
               justifyContent="flex-start"
               color="white"
@@ -71,13 +74,13 @@ export default function LobbyPage() {
         </Box>
         <Box ml="250px" w="calc(100% - 250px)" h="100vh" background = {"rgb(192, 200, 202)"} p={6} mt="80px">
           <Box bg="white" borderRadius="xl" p={8}  h="100%" display="flex" flexDirection="column" >
-            {sidebarSection === "dashboard" && (
+            {sidebarSection === "mapa" && (
               <>
                 <Heading size="lg" color="gray.700" mb={4}>
-                  Dashboard Principal
+                  Mapa de Postos de Saúde
                 </Heading>
                 <Text color="gray.600" fontSize="lg">
-                  Bem-vindo ao sistema de gerenciamento de postos de saúde.
+                  Procure por Posto De Saúde na sua região e visualize informações detalhadas.
                 </Text>
               </>
             )}
@@ -91,13 +94,13 @@ export default function LobbyPage() {
                 </Text>
               </>
             )}
-            {sidebarSection === "relatorios" && (
+            {sidebarSection === "dashboard" && (
               <>
                 <Heading size="lg" color="gray.700" mb={4}>
-                  Relatórios
+                  Dashboard
                 </Heading>
                 <Text color="gray.600" fontSize="lg">
-                  Gere e visualize relatórios detalhados do sistema.
+                  Veja estatísticas
                 </Text>
               </>
             )}
