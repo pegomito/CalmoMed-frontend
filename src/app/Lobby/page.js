@@ -61,7 +61,7 @@ export default function LobbyPage() {
       </Box>
 
       
-      <Box ml="250px" w="calc(100% - 250px)" h="100vh" bg="gray.50">
+      <Box ml="250px" w="calc(100% - 250px)" h="100vh" background = {"rgb(192, 200, 202)"} p={6}>
        
         <Tabs.Root defaultValue="dashboard" variant="enclosed">
           <Box bg="white" borderBottom="1px solid" borderColor="gray.200" px={4}>

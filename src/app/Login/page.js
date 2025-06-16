@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (data) => {
+  const registerLogin = (data) => {
     toaster.create({
       title: "Login realizado com sucesso!",
       description: `Bem-vindo, ${data.email}`,
@@ -23,7 +23,7 @@ export default function LoginPage() {
     }, 1000);
   };
 
-  const handleRegisterSuccess = () => {
+  const registerSuccess = () => {
     setIsRegistering(false);
   };
 
@@ -80,7 +80,7 @@ export default function LoginPage() {
           h="100%"
         >
           <Image
-            src="/images/Whisk_ba740e948e.png"
+            src="/images/Whisk_dadabc4c57.png"
             alt="Logo"
             maxW="900px"
             maxH="900px"
@@ -104,7 +104,7 @@ export default function LoginPage() {
         >
           <VStack spacing={4} align="stretch">
             <Heading color="white" fontSize={40} fontWeight={800} textAlign="center">
-              Seja bem-vindo!
+              Bem Vindo!
             </Heading>
             {/* <Text color="white" fontSize={39} fontWeight={700} textAlign="center">
               Posto Calmo
@@ -114,18 +114,18 @@ export default function LoginPage() {
             </Text>
             {isRegistering ? (
               <>
-                <RegisterInput onRegisterSuccess={handleRegisterSuccess} />
+                <RegisterInput onRegisterSuccess={registerSuccess} />
                 <Button mt={2} colorScheme="gray" variant="solid" onClick={() => setIsRegistering(false)}>
                   Voltar ao Login
                 </Button>
               </>
             ) : (
-              <LoginInput onLogin={handleLogin} />
+              <LoginInput onLogin={registerLogin} />
             )}
             <Button
               mt={4}
               onClick={() => setIsRegistering((v) => !v)}
-              colorScheme="teal"
+              color={"teal.300"}
               variant="link"
             >
               {isRegistering ? "Já tem uma conta? Faça login" : "Não tem uma conta? Cadastre-se"}

@@ -4,23 +4,19 @@
 
 Este é um projeto frontend para visualização de informações sobre postos de saúde, construído com Next.js, React e Chakra UI.
 
-## Começando
-
-Siga estas instruções para configurar e rodar o projeto localmente.
+## Como rodar o projeto localmente
 
 ### Pré-requisitos
 
-Certifique-se de que você tem o Node.js e o npm (ou yarn) instalados na sua máquina.
-
 - [Node.js](https://nodejs.org/) (versão recomendada: LTS)
-- npm (geralmente vem com o Node.js) ou [Yarn](https://yarnpkg.com/)
+- npm (vem com o Node.js) ou [Yarn](https://yarnpkg.com/)
 
 ### Instalação
 
-1. Clone o repositório (se aplicável):
+1. Clone o repositório:
    ```bash
    git clone <url-do-repositorio>
-   cd nome-do-projeto
+   cd projeto-postos
    ```
 2. Instale as dependências do projeto:
    ```bash
@@ -39,26 +35,33 @@ npm run dev
 yarn dev
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no seu navegador para ver o resultado.
+Por padrão, o projeto roda em [http://localhost:3000](http://localhost:3000). Se a porta 3000 estiver ocupada, o Next.js usará outra porta disponível (ex: 41517). O terminal mostrará a URL correta após rodar o comando acima.
 
-## Principais Tecnologias
+Se quiser forçar uma porta específica, rode:
+```bash
+PORT=3000 npm run dev
+```
 
-- [Next.js](https://nextjs.org/) - Framework React para produção.
-- [React](https://reactjs.org/) - Biblioteca JavaScript para construir interfaces de usuário.
-- [Chakra UI](https://chakra-ui.com/) - Biblioteca de componentes UI simples, modular e acessível.
-- [next-themes](https://github.com/pacocoursey/next-themes) - Para gerenciamento de temas (claro/escuro).
+### Dependências principais
 
-## Estrutura de Pastas
+- [Next.js](https://nextjs.org/)
+- [React](https://reactjs.org/)
+- [Chakra UI](https://chakra-ui.com/)
+- [next-themes](https://github.com/pacocoursey/next-themes)
+- [react-icons](https://react-icons.github.io/react-icons/) (necessário para os ícones)
 
-- `src/app/`: Contém as páginas da aplicação (usando o App Router do Next.js).
-- `src/components/`: Contém os componentes React reutilizáveis.
-  - `src/components/ui/`: Componentes de UI específicos, como o `Provider`.
-- `src/contexts/`: (A ser criado) Para contextos React.
-- `public/`: Arquivos estáticos.
-- `jsconfig.json`: Configurações do JavaScript para o editor (paths, etc.).
+### Estrutura de Pastas
 
-## Próximos Passos
+- `src/app/`: Páginas da aplicação (App Router do Next.js)
+- `src/components/`: Componentes React reutilizáveis
+  - `src/components/ui/`: Componentes de UI específicos
+- `public/`: Arquivos estáticos
+- `jsconfig.json`: Configurações do JavaScript para o editor
 
-- Desenvolver as páginas em `src/app/`.
-- Criar componentes reutilizáveis em `src/components/`.
-- Implementar contextos em `src/contexts/` conforme necessário.
+### Dicas
+- Se encontrar erro de porta ocupada, feche outros servidores locais ou use outra porta.
+- Se aparecer erro de dependência, rode `npm install` novamente.
+
+---
+
+Pronto! Agora qualquer pessoa pode instalar as dependências e visualizar o projeto localmente.
