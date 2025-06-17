@@ -35,8 +35,6 @@ export default function FixBar() {
           />
           
         </Flex>
-
-        {/* Barra de pesquisa */}
         <Box position="relative" w="100%" maxW="500px" mx={6}>
           <Input
             borderRadius="full"

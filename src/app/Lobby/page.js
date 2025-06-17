@@ -13,7 +13,7 @@ export default function LobbyPage() {
         <Box
           w="250px"
           h="calc(100vh - 80px)"
-          background="rgba(42, 44, 82, 0.8)"
+          background="rgba(21, 22, 41, 0.8)"
           color="white"
           position="fixed"
           left="0"
@@ -22,8 +22,8 @@ export default function LobbyPage() {
           p={4}
           boxShadow="xl"
         >
-          <VStack spacing={4} align="center">
-            <Heading textStyle= "2xl" color="teal.300" fontWeight={"bold"} mb={4}>
+          <VStack spacing={4} align="stretch">
+            <Heading textStyle="1x1" color={"rgb(255, 255, 255)"} fontWeight={"bold"} mb={4} textAlign="stretch">
               Menu Principal
             </Heading>
             <Button

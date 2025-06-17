@@ -20,7 +20,7 @@ export default function LoginPage() {
     // Redireciona para o lobby após 1 segundo
     setTimeout(() => {
       router.push('/Lobby');
-    }, 2000);
+    }, 1000);
   };
 
   const registerSuccess = () => {
