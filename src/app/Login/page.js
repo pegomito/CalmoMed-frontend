@@ -1,6 +1,5 @@
 'use client';
 import { Box, VStack, Heading, Text, Button, Image } from "@chakra-ui/react";
-import { Toaster, toaster } from "@/components/ui/toaster";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import LoginInput from "@/components/LoginInput";
@@ -11,16 +10,10 @@ export default function LoginPage() {
   const router = useRouter();
 
   const registerLogin = (data) => {
-    toaster.create({
-      title: "Login realizado com sucesso!",
-      description: `Bem-vindo, ${data.email}`,
-      type: "success",
-    });
+    console.log("Login realizado:", data.email);
     
-    // Redireciona para o lobby após 1 segundo
-    setTimeout(() => {
-      router.push('/Lobby');
-    }, 1000);
+    // Redireciona para o lobby
+    router.push('/Lobby');
   };
 
   const registerSuccess = () => {
@@ -133,7 +126,6 @@ export default function LoginPage() {
           </VStack>
         </Box>
       </Box>
-      <Toaster />
     </Box>
   );
 }

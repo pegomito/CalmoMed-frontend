@@ -1,63 +1,61 @@
 'use client';
+import { VStack, Input, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { Input, Button, Stack } from "@chakra-ui/react";
-import { toaster } from "@/components/ui/toaster";
-import PasswordDialog from "@/components/PasswordDialog";
 
 export default function LoginInput({ onLogin }) {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const changeInput = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const sendLogin = () => {
-    if (!formData.email || !formData.password) {
-      toaster.create({
-        title: "Erro",
-        description: "Preencha todos os campos obrigatórios!",
-      });
-      return;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (email && password) {
+      onLogin({ email, password });
     }
-    onLogin(formData);
   };
 
   return (
-    <>
-      <Stack spacing={4}>
+    <VStack spacing={4} align="stretch">
+      <VStack spacing={3} align="stretch">
+        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+          Email
+        </Text>
         <Input
-          name="email"
-          placeholder="E-mail"
-          onChange={changeInput}
-          borderColor="white"
-          _placeholder={{ color: "white" }}
+          type="email"
+          placeholder="Digite seu email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          bg="white"
+          border="1px solid"
+          borderColor="gray.300"
+          _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px teal.500" }}
         />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Senha"
-          onChange={changeInput}
-          borderColor="white"
-          _placeholder={{ color: "white" }}
-        />
-        
-        <Button onClick={sendLogin} colorScheme="blue">
-          Entrar
-        </Button>
-        <Button
-          colorScheme="gray"
-          variant="link"
-          onClick={() => setPasswordDialogOpen(true)}
-        >
-          Esqueci minha senha
-        </Button>
-      </Stack>
+      </VStack>
 
-      <PasswordDialog 
-        isOpen={passwordDialogOpen} 
-        onClose={() => setPasswordDialogOpen(false)} 
-      />
-    </>
+      <VStack spacing={3} align="stretch">
+        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+          Senha
+        </Text>
+        <Input
+          type="password"
+          placeholder="Digite sua senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          bg="white"
+          border="1px solid"
+          borderColor="gray.300"
+          _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px teal.500" }}
+        />
+      </VStack>
+
+      <Button
+        colorScheme="teal"
+        size="lg"
+        onClick={handleSubmit}
+        isDisabled={!email || !password}
+        _hover={{ transform: "translateY(-1px)", boxShadow: "lg" }}
+      >
+        Entrar
+      </Button>
+    </VStack>
   );
 }
