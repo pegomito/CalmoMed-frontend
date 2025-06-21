@@ -16,7 +16,7 @@ export default function LoginInput({ onLogin }) {
   return (
     <VStack spacing={4} align="stretch">
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white" fontWeight="medium">
           Email
         </Text>
         <Input
@@ -32,7 +32,7 @@ export default function LoginInput({ onLogin }) {
       </VStack>
 
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white" fontWeight="medium">
           Senha
         </Text>
         <Input
