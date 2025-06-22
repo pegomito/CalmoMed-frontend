@@ -11,15 +11,15 @@ export function SearchProvider({ children }) {
   const searchPosto = (term) => {
     setSearchTerm(term);
     
-    // Lista de postos disponíveis para pesquisa
     const postos = [
       { id: "ubs-centro", name: "UBS Centro", position: { lat: -27.0945, lng: -52.6166 } },
-      { id: "ubs-efapi", name: "UBS Efapi", position: { lat: -27.1120, lng: -52.6330 } },
-      { id: "esf-bela-vista", name: "ESF Bela Vista", position: { lat: -27.0820, lng: -52.6050 } },
-      { id: "ubs-jardim-america", name: "UBS Jardim América", position: { lat: -27.0880, lng: -52.6100 } },
-      { id: "ubs-passo-dos-fortes", name: "UBS Passo dos Fortes", position: { lat: -27.1050, lng: -52.6200 } },
-      { id: "ubs-santa-maria", name: "UBS Santa Maria", position: { lat: -27.1200, lng: -52.6400 } },
-      { id: "ubs-sao-pedro", name: "UBS São Pedro", position: { lat: -27.0800, lng: -52.6350 } }
+      { id: "ubs-efapi", name: "UBS Efapi", position: { lat: -27.0798, lng: -52.6045 } },
+      { id: "esf-bela-vista", name: "ESF Bela Vista", position: { lat: -27.0756, lng: -52.6445 } },
+      { id: "ubs-jardim-america", name: "UBS Jardim América", position: { lat: -27.0823, lng: -52.6298 } },
+      { id: "ubs-passo-fortes", name: "UBS Passo dos Fortes", position: { lat: -27.0923, lng: -52.6389 } },
+      { id: "ubs-santa-maria", name: "UBS Santa Maria", position: { lat: -27.1054, lng: -52.5987 } },
+      { id: "ubs-sao-pedro", name: "UBS São Pedro", position: { lat: -27.1125, lng: -52.6203 } },
+      { id: "ubs-sao-cristovao", name: "UBS São Cristóvão", position: { lat: -27.1178, lng: -52.6134 } }
     ];
 
     if (!term.trim()) {
@@ -27,20 +27,18 @@ export function SearchProvider({ children }) {
       return;
     }
 
-    // Buscar posto que corresponde ao termo de pesquisa
     const foundPosto = postos.find(posto => 
-      posto.name.toLowerCase().includes(term.toLowerCase())
+      posto.name.toLowerCase().includes(term.toLowerCase()) ||
+      posto.id.toLowerCase().includes(term.toLowerCase()) ||
+      posto.name.toLowerCase().replace(/ubs|esf/g, '').trim().includes(term.toLowerCase())
     );
 
     if (foundPosto && mapInstance) {
-      // Centralizar mapa no posto encontrado
       mapInstance.setCenter(foundPosto.position);
       mapInstance.setZoom(16);
       
-      // Destacar o marcador
       setHighlightedMarker(foundPosto.id);
       
-      // Remover destaque após 3 segundos
       setTimeout(() => {
         setHighlightedMarker(null);
       }, 3000);

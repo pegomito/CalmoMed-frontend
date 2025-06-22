@@ -7,6 +7,7 @@ import GoogleMap from "@/components/GoogleMap";
 import NotificationCenter from "@/components/NotificationCenter";
 import NotificationSettings from "@/components/NotificationSettings";
 import PostosList from "@/components/PostosList";
+import { SearchProvider } from "@/contexts/SearchContext";
 
 export default function LobbyPage() {
   const [sidebarSection, setSidebarSection] = useState("mapa");
@@ -20,7 +21,7 @@ export default function LobbyPage() {
   }, [searchParams]);
 
   return (
-    <>
+    <SearchProvider>
       <FixBar />
       <Box w="100%" h="100vh" display="flex">
         <Box
@@ -218,6 +219,6 @@ export default function LobbyPage() {
           </Box>
         </Box>
       </Box>
-    </>
+    </SearchProvider>
   );
 }

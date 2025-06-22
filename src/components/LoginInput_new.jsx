@@ -10,6 +10,7 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
+import axios from "@/utils/axios";
 
 export default function LoginInput({ onLogin }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -45,15 +46,21 @@ export default function LoginInput({ onLogin }) {
       });
       return;
     }
-    
-    setTimeout(() => {
+    try {
+      const response = await axios.post("/users/email", { email: recoverEmail });
       toaster.create({
         title: "Sucesso",
-        description: "Código enviado para o e-mail (simulação).",
+        description: response.data.message || "Código enviado para o e-mail.",
         type: "success",
       });
       setStep(2);
-    }, 1000);
+    } catch (error) {
+      toaster.create({
+        title: "Erro",
+        description: error.response?.data?.message || "Erro ao enviar código de recuperação.",
+        type: "error",
+      });
+    }
   };
 
   const changePassword = async () => {
@@ -65,11 +72,14 @@ export default function LoginInput({ onLogin }) {
       });
       return;
     }
-    
-    setTimeout(() => {
+    try {
+      const response = await axios.post("/users/recuperar-senha", {
+        token: recoverToken,
+        newPassword,
+      });
       toaster.create({
         title: "Sucesso",
-        description: "Senha alterada com sucesso! (simulação)",
+        description: response.data.message || "Senha alterada com sucesso!",
         type: "success",
       });
       setStep(1);
@@ -77,7 +87,13 @@ export default function LoginInput({ onLogin }) {
       setRecoverToken("");
       setNewPassword("");
       setDialogOpen(false);
-    }, 1000);
+    } catch (error) {
+      toaster.create({
+        title: "Erro",
+        description: error.response?.data?.message || "Erro ao redefinir senha.",
+        type: "error",
+      });
+    }
   };
 
   const openDialog = () => {
@@ -107,7 +123,7 @@ export default function LoginInput({ onLogin }) {
           _placeholder={{ color: "white" }}
         />
         <Button
-          color={"teal.300"}
+          colorScheme="gray"
           variant="link"
           onClick={openDialog}
         >
@@ -124,7 +140,7 @@ export default function LoginInput({ onLogin }) {
           <Dialog.Positioner>
             <Dialog.Content
               style={{
-                background: "white",
+                background: "rgba(12, 39, 80, 0.97)",
                 borderRadius: 8,
                 padding: 24,
                 minWidth: 320,
@@ -133,15 +149,14 @@ export default function LoginInput({ onLogin }) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 1300,
-                border: "2px solid green",
               }} >
               <Dialog.Header>
-                <Dialog.Title style={{ color: "green", fontWeight: "bold" }}>
+                <Dialog.Title>
                   {step === 1 ? "Recuperar Senha" : "Redefinir Senha"}
                 </Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
-                <Text mb={4} style={{ color: "black" }}>
+                <Text mb={4}>
                   {step === 1
                     ? "Digite seu e-mail para receber o código de recuperação."
                     : "Digite o código recebido e sua nova senha."}
@@ -153,10 +168,8 @@ export default function LoginInput({ onLogin }) {
                         placeholder="E-mail"
                         value={recoverEmail}
                         onChange={e => setRecoverEmail(e.target.value)}
-                        borderColor="green"
-                        _focus={{ borderColor: "green", boxShadow: "0 0 0 1px green" }}
                       />
-                      <Button colorScheme="green" onClick={sendRecoverEmail}>
+                      <Button colorScheme="blue" onClick={sendRecoverEmail}>
                         Enviar código
                       </Button>
                     </>
@@ -166,18 +179,14 @@ export default function LoginInput({ onLogin }) {
                         placeholder="Código recebido no e-mail"
                         value={recoverToken}
                         onChange={e => setRecoverToken(e.target.value)}
-                        borderColor="green"
-                        _focus={{ borderColor: "green", boxShadow: "0 0 0 1px green" }}
                       />
                       <Input
                         placeholder="Nova senha"
                         type="password"
                         value={newPassword}
                         onChange={e => setNewPassword(e.target.value)}
-                        borderColor="green"
-                        _focus={{ borderColor: "green", boxShadow: "0 0 0 1px green" }}
                       />
-                      <Button colorScheme="green" onClick={changePassword}>
+                      <Button colorScheme="blue" onClick={changePassword}>
                         Alterar senha
                       </Button>
                     </>
@@ -185,7 +194,7 @@ export default function LoginInput({ onLogin }) {
                 </Stack>
               </Dialog.Body>
               <Dialog.Footer>
-                <Button variant="ghost" onClick={() => setDialogOpen(false)} color="gray.600">
+                <Button variant="ghost" onClick={() => setDialogOpen(false)}>
                  Cancelar
                 </Button>
               </Dialog.Footer>

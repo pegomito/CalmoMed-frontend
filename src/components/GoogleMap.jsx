@@ -19,7 +19,6 @@ export default function GoogleMap({
   const AdvancedMarkerRef = useRef(null);
 
   useEffect(() => {
-    // Adicionar CSS para remover bordas do Google Maps
     const style = document.createElement('style');
     style.textContent = `
       .gm-style div,
@@ -52,7 +51,6 @@ export default function GoogleMap({
         const { Map } = await loader.importLibrary('maps');
         const { AdvancedMarkerElement } = await loader.importLibrary('marker');
         
-        // Armazenar a classe para uso posterior
         AdvancedMarkerRef.current = AdvancedMarkerElement;
         
         const mapInstance = new Map(mapRef.current, {
@@ -176,7 +174,6 @@ export default function GoogleMap({
           `;
         };
 
-        // Criar marcadores iniciais
         const initialMarkers = [];
         markers.forEach((marker, index) => {
           const markerId = marker.id || index;
@@ -217,7 +214,6 @@ export default function GoogleMap({
 
     initMap();
 
-    // Cleanup: remover o estilo quando o componente for desmontado
     return () => {
       const styles = document.querySelectorAll('style');
       styles.forEach(styleEl => {
@@ -228,18 +224,15 @@ export default function GoogleMap({
     };
   }, [center, zoom, markers]);
 
-  // UseEffect separado para atualizar marcadores quando expandedMarker muda
   useEffect(() => {
     if (!map || markerElements.length === 0 || !AdvancedMarkerRef.current) return;
 
-    // Remover marcadores existentes
     markerElements.forEach(el => {
       if (el.map) {
         el.map = null;
       }
     });
 
-    // Recriar marcadores com estado correto
     const newMarkers = [];
     markers.forEach((marker, index) => {
       const markerId = marker.id || index;

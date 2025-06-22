@@ -7,17 +7,46 @@ import { useSearch } from "@/contexts/SearchContext";
 
 export default function FixBar() {
   const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { searchPosto } = useSearch();
   const router = useRouter();
+
+  const postosSuggestions = [
+    "UBS Centro",
+    "UBS Efapi", 
+    "ESF Bela Vista",
+    "UBS Jardim América",
+    "UBS Passo dos Fortes",
+    "UBS Santa Maria",
+    "UBS São Pedro",
+    "UBS São Cristóvão"
+  ];
+
+  const filteredSuggestions = postosSuggestions.filter(posto =>
+    posto.toLowerCase().includes(localSearchTerm.toLowerCase()) && localSearchTerm.length > 0
+  );
 
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
       searchPosto(localSearchTerm);
+      setShowSuggestions(false);
     }
   };
 
   const handleSearchClick = () => {
     searchPosto(localSearchTerm);
+    setShowSuggestions(false);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setLocalSearchTerm(suggestion);
+    searchPosto(suggestion);
+    setShowSuggestions(false);
+  };
+
+  const handleInputChange = (e) => {
+    setLocalSearchTerm(e.target.value);
+    setShowSuggestions(e.target.value.length > 0);
   };
 
   return (
@@ -50,13 +79,16 @@ export default function FixBar() {
         <Box position="relative" w="100%" maxW="500px" mx={6}>
           <Input
             borderRadius="full"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            value={localSearchTerm}
+            onChange={handleInputChange}
+            onKeyPress={handleSearch}
+            onFocus={() => setShowSuggestions(localSearchTerm.length > 0)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
             pl={12}
-            pr={4}
+            pr={12}
             h="40px"
             fontSize="md"
-            placeholder="Buscar postos, relatórios..."
+            placeholder="Buscar postos de saúde..."
             _placeholder={{ color: "rgba(255, 255, 255, 0.7)" }}
             bg="rgba(255, 255, 255, 0.15)"
             border="1px solid rgba(255, 255, 255, 0.3)"
@@ -70,6 +102,51 @@ export default function FixBar() {
           <Box position="absolute" left={4} top="50%" transform="translateY(-50%)">
             <FaSearch color="rgba(255, 255, 255, 0.7)" size={16} />
           </Box>
+          <Button
+            position="absolute"
+            right={2}
+            top="50%"
+            transform="translateY(-50%)"
+            size="sm"
+            variant="ghost"
+            color="white"
+            _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
+            onClick={handleSearchClick}
+            px={2}
+          >
+            
+          </Button>
+          
+          {showSuggestions && filteredSuggestions.length > 0 && (
+            <Box
+              position="absolute"
+              top="100%"
+              left="0"
+              right="0"
+              bg="white"
+              borderRadius="md"
+              boxShadow="lg"
+              zIndex="1002"
+              mt={1}
+              maxH="200px"
+              overflowY="auto"
+            >
+              {filteredSuggestions.map((suggestion, index) => (
+                <Box
+                  key={index}
+                  p={3}
+                  cursor="pointer"
+                  color="gray.800"
+                  _hover={{ bg: "gray.100" }}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  borderBottom={index < filteredSuggestions.length - 1 ? "1px solid" : "none"}
+                  borderColor="gray.200"
+                >
+                  <Text fontSize="sm">{suggestion}</Text>
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
         
         <Flex align="center" gap={4}>

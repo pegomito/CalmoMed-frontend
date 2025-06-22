@@ -37,7 +37,6 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
 
   return (
     <>
-      {/* Backdrop */}
       <Box
         position="fixed"
         top="0"
@@ -49,7 +48,6 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
         onClick={onClose}
       />
       
-      {/* Modal Content */}
       <Box
         position="fixed"
         top="50%"
@@ -64,7 +62,6 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
         zIndex="1001"
         overflow="hidden"
       >
-        {/* Header */}
         <Box p={6} borderBottom="1px solid" borderColor="gray.200">
           <VStack align="stretch" spacing={2}>
             <HStack justify="space-between" align="flex-start">
@@ -98,7 +95,6 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
           </VStack>
         </Box>
 
-        {/* Body */}
         <Box p={6} overflowY="auto" maxH="60vh">
           <VStack spacing={6} align="stretch">
             <Box>
@@ -192,7 +188,6 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
           </VStack>
         </Box>
 
-        {/* Footer */}
         <Box p={6} borderTop="1px solid" borderColor="gray.200">
           <HStack justify="flex-end">
             <Button onClick={onClose} colorScheme="gray">
