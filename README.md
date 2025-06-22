@@ -62,6 +62,3 @@ PORT=3000 npm run dev
 - Se encontrar erro de porta ocupada, feche outros servidores locais ou use outra porta.
 - Se aparecer erro de dependência, rode `npm install` novamente.
 
----
-
-Pronto! Agora qualquer pessoa pode instalar as dependências e visualizar o projeto localmente.
