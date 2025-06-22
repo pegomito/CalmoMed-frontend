@@ -3,10 +3,22 @@ import Image from "next/image";
 import { useState } from "react";
 import { FaSearch, FaUserCircle, FaCog } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useSearch } from "@/contexts/SearchContext";
 
 export default function FixBar() {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [localSearchTerm, setLocalSearchTerm] = useState("");
+  const { searchPosto } = useSearch();
   const router = useRouter();
+
+  const handleSearch = (e) => {
+    if (e.key === 'Enter') {
+      searchPosto(localSearchTerm);
+    }
+  };
+
+  const handleSearchClick = () => {
+    searchPosto(localSearchTerm);
+  };
 
   return (
     <Box 

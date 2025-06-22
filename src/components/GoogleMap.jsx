@@ -16,6 +16,7 @@ export default function GoogleMap({
   const [userLocation, setUserLocation] = useState(null);
   const [expandedMarker, setExpandedMarker] = useState(null);
   const [markerElements, setMarkerElements] = useState([]);
+  const AdvancedMarkerRef = useRef(null);
 
   useEffect(() => {
     // Adicionar CSS para remover bordas do Google Maps
@@ -51,6 +52,9 @@ export default function GoogleMap({
         const { Map } = await loader.importLibrary('maps');
         const { AdvancedMarkerElement } = await loader.importLibrary('marker');
         
+        // Armazenar a classe para uso posterior
+        AdvancedMarkerRef.current = AdvancedMarkerElement;
+        
         const mapInstance = new Map(mapRef.current, {
           center,
           zoom,
@@ -77,45 +81,6 @@ export default function GoogleMap({
         setMap(mapInstance);
         setIsLoaded(true);
 
-        window.tracarRota = (lat, lng) => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const location = {
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude
-                };
-                
-                const directionsService = new google.maps.DirectionsService();
-                const directionsRenderer = new google.maps.DirectionsRenderer({
-                  draggable: true,
-                  map: mapInstance,
-                });
-
-                directionsService.route(
-                  {
-                    origin: location,
-                    destination: { lat, lng },
-                    travelMode: google.maps.TravelMode.DRIVING,
-                  },
-                  (response, status) => {
-                    if (status === "OK") {
-                      directionsRenderer.setDirections(response);
-                    } else {
-                      console.error("Não foi possível traçar a rota: " + status);
-                    }
-                  }
-                );
-              },
-              () => {
-                console.error("Permita o acesso à localização para traçar a rota");
-              }
-            );
-          } else {
-            console.error("Geolocalização não suportada pelo navegador");
-          }
-        };
-
         const getStatusColor = (status) => {
           switch(status) {
             case 'baixa': return '#22c55e';
@@ -135,7 +100,7 @@ export default function GoogleMap({
               background: white;
               border: 0 !important;
               outline: 0 !important;
-              box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+              box-shadow: 0 4px 10px rgba(0,0,0,0.12);
               border-radius: 8px;
               padding: ${isExpanded ? '16px' : '8px'};
               min-width: ${isExpanded ? '140px' : '140px'};
@@ -244,49 +209,6 @@ export default function GoogleMap({
 
         setMarkerElements(initialMarkers);
 
-        // Função global para atualizar marcadores sem reinicializar o mapa
-        window.updateMapMarkers = (expandedId) => {
-          // Remover marcadores existentes
-          markerElements.forEach(el => {
-            if (el.map) {
-              el.map = null;
-            }
-          });
-          
-          const newMarkers = [];
-          markers.forEach((marker, index) => {
-            const markerId = marker.id || index;
-            const isExpanded = expandedId === markerId;
-            
-            const markerDiv = document.createElement('div');
-            markerDiv.style.cssText = `
-              position: relative;
-              cursor: pointer;
-              transition: all 0.3s ease;
-              border: 0 !important;
-              outline: 0 !important;
-              box-shadow: none !important;
-            `;
-            
-            markerDiv.innerHTML = createMarkerContent(marker, isExpanded);
-
-            const markerElement = new AdvancedMarkerElement({
-              map: mapInstance,
-              position: marker.position,
-              content: markerDiv,
-              title: marker.title,
-            });
-
-            markerElement.addListener('click', () => {
-              setExpandedMarker(prev => prev === markerId ? null : markerId);
-            });
-
-            newMarkers.push(markerElement);
-          });
-          
-          setMarkerElements(newMarkers);
-        };
-
       } catch (err) {
         console.error('Erro ao carregar Google Maps:', err);
         setError('Erro ao carregar o mapa. Verifique sua conexão e API Key.');
@@ -306,12 +228,128 @@ export default function GoogleMap({
     };
   }, [center, zoom, markers]);
 
-  // UseEffect separado para atualizar apenas os marcadores quando expandedMarker muda
+  // UseEffect separado para atualizar marcadores quando expandedMarker muda
   useEffect(() => {
-    if (window.updateMapMarkers && markerElements.length > 0) {
-      window.updateMapMarkers(expandedMarker);
-    }
-  }, [expandedMarker, markerElements]);
+    if (!map || markerElements.length === 0 || !AdvancedMarkerRef.current) return;
+
+    // Remover marcadores existentes
+    markerElements.forEach(el => {
+      if (el.map) {
+        el.map = null;
+      }
+    });
+
+    // Recriar marcadores com estado correto
+    const newMarkers = [];
+    markers.forEach((marker, index) => {
+      const markerId = marker.id || index;
+      const isExpanded = expandedMarker === markerId;
+      
+      const markerDiv = document.createElement('div');
+      markerDiv.style.cssText = `
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+      `;
+      
+      markerDiv.innerHTML = `
+        <div style="
+          position: absolute;
+          bottom: 25px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: white;
+          border: 0 !important;
+          outline: 0 !important;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+          border-radius: 8px;
+          padding: ${isExpanded ? '16px' : '8px'};
+          min-width: ${isExpanded ? '140px' : '140px'};
+          max-width: ${isExpanded ? '320px' : '180px'};
+          z-index: 1000;
+          cursor: pointer;
+        ">
+          <div style="
+            display: flex;
+            align-items: center;
+            margin-bottom: ${isExpanded ? '8px' : '4px'};
+          ">
+            <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;">🏥</div>
+            <div style="
+              font-weight: 600;
+              color: #333;
+              font-size: ${isExpanded ? '14px' : '12px'};
+              flex: 1;
+            ">${marker.title}</div>
+            <div style="
+              width: ${isExpanded ? '12px' : '8px'};
+              height: ${isExpanded ? '12px' : '8px'};
+              border-radius: 50%;
+              background: ${(() => {
+                switch(marker.lotacao) {
+                  case 'baixa': return '#22c55e';
+                  case 'média': return '#eab308';
+                  case 'alta': return '#ef4444';
+                  default: return '#6b7280';
+                }
+              })()};
+            "></div>
+          </div>
+          
+          ${isExpanded ? `
+            <div style="
+              font-size: 12px;
+              color: #666;
+              line-height: 1.4;
+              margin-bottom: 12px;
+            ">
+              <div style="margin-bottom: 4px;"><strong>Endereço:</strong> ${marker.address || 'Não informado'}</div>
+              <div style="margin-bottom: 4px;"><strong>Lotação:</strong> ${marker.lotacao || 'baixa'}</div>
+              <div style="margin-bottom: 4px;"><strong>Tempo de Espera:</strong> ${marker.tempoEspera || '15min'}</div>
+              <div style="margin-bottom: 4px;"><strong>Fila:</strong> ${marker.filaAtual || '5'} pessoas</div>
+              <div style="margin-bottom: 4px;"><strong>Médicos:</strong> ${marker.medicosDisponiveis || '2'}</div>
+              <div style="margin-bottom: 8px;"><strong>Avaliação:</strong> ${marker.avaliacao || '4.2'}/5</div>
+            </div>
+          ` : `
+            <div style="
+              font-size: 10px;
+              color: #666;
+              line-height: 1.3;
+            ">
+              <div>Lotação: ${marker.lotacao || 'baixa'}</div>
+              <div>Espera: ${marker.tempoEspera || '15min'}</div>
+            </div>
+          `}
+        </div>
+        
+        <div style="
+          width: 20px;
+          height: 20px;
+          background: #2C7A7B;
+          border: 3px solid white;
+          border-radius: 50%;
+        "></div>
+      `;
+
+      const markerElement = new AdvancedMarkerRef.current({
+        map: map,
+        position: marker.position,
+        content: markerDiv,
+        title: marker.title,
+      });
+
+      markerElement.addListener('click', () => {
+        setExpandedMarker(prev => prev === markerId ? null : markerId);
+      });
+
+      newMarkers.push(markerElement);
+    });
+
+    setMarkerElements(newMarkers);
+  }, [expandedMarker, map, markers]);
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
