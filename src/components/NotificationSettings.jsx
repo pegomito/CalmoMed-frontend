@@ -6,12 +6,12 @@ import {
   Text, 
   Switch, 
   Heading,
-  Select,
   Button,
   Textarea,
   Input,
   Badge
 } from "@chakra-ui/react";
+import { Select } from "@chakra-ui/react";
 import { useState } from "react";
 import { toaster } from "@/components/ui/toaster";
 
@@ -24,7 +24,7 @@ export default function NotificationSettings() {
     examResults: true,
     medicationAlerts: true,
     emergencyAlerts: true,
-    reminderTiming: "24", // horas antes
+    reminderTiming: "24",
     preferredChannel: "email"
   });
 
@@ -42,7 +42,7 @@ export default function NotificationSettings() {
   };
 
   const saveSettings = () => {
-    // Aqui você salvaria as configurações no backend
+    
     toaster.create({
       title: "Configurações salvas",
       description: "Suas preferências de notificação foram atualizadas.",
@@ -83,7 +83,6 @@ export default function NotificationSettings() {
         Configurações de Notificações
       </Heading>
 
-      {/* Canais de Notificação */}
       <Box
         bg="rgba(255, 255, 255, 0.05)"
         borderRadius="xl"
@@ -126,22 +125,37 @@ export default function NotificationSettings() {
 
           <Box>
             <Text color="gray.300" mb={2}>Canal Preferencial</Text>
-            <Select
-              value={settings.preferredChannel}
-              onChange={(e) => handleSettingChange('preferredChannel', e.target.value)}
-              bg="rgba(255, 255, 255, 0.1)"
-              borderColor="rgba(255, 255, 255, 0.2)"
-              color="white"
+            <Select.Root 
+              value={[settings.preferredChannel]}
+              onValueChange={(e) => handleSettingChange('preferredChannel', e.value[0])}
             >
-              <option value="email" style={{background: '#2D3748'}}>E-mail</option>
-              <option value="sms" style={{background: '#2D3748'}}>SMS</option>
-              <option value="push" style={{background: '#2D3748'}}>Push Notification</option>
-            </Select>
+              <Select.Control>
+                <Select.Trigger
+                  bg="rgba(255, 255, 255, 0.1)"
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  color="white"
+                >
+                  <Select.ValueText placeholder="Selecione o canal" />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content bg="#2D3748" borderColor="rgba(255, 255, 255, 0.2)">
+                  <Select.Item item={{label: "E-mail", value: "email"}}>
+                    <Select.ItemText>E-mail</Select.ItemText>
+                  </Select.Item>
+                  <Select.Item item={{label: "SMS", value: "sms"}}>
+                    <Select.ItemText>SMS</Select.ItemText>
+                  </Select.Item>
+                  <Select.Item item={{label: "Push Notification", value: "push"}}>
+                    <Select.ItemText>Push Notification</Select.ItemText>
+                  </Select.Item>
+                </Select.Content>
+              </Select.Positioner>
+            </Select.Root>
           </Box>
         </VStack>
       </Box>
 
-      {/* Tipos de Notificação */}
       <Box
         bg="rgba(255, 255, 255, 0.05)"
         borderRadius="xl"
@@ -205,23 +219,40 @@ export default function NotificationSettings() {
 
           <Box>
             <Text color="gray.300" mb={2}>Antecedência dos Lembretes</Text>
-            <Select
-              value={settings.reminderTiming}
-              onChange={(e) => handleSettingChange('reminderTiming', e.target.value)}
-              bg="rgba(255, 255, 255, 0.1)"
-              borderColor="rgba(255, 255, 255, 0.2)"
-              color="white"
+            <Select.Root 
+              value={[settings.reminderTiming]}
+              onValueChange={(e) => handleSettingChange('reminderTiming', e.value[0])}
             >
-              <option value="1" style={{background: '#2D3748'}}>1 hora antes</option>
-              <option value="6" style={{background: '#2D3748'}}>6 horas antes</option>
-              <option value="24" style={{background: '#2D3748'}}>1 dia antes</option>
-              <option value="48" style={{background: '#2D3748'}}>2 dias antes</option>
-            </Select>
+              <Select.Control>
+                <Select.Trigger
+                  bg="rgba(255, 255, 255, 0.1)"
+                  borderColor="rgba(255, 255, 255, 0.2)"
+                  color="white"
+                >
+                  <Select.ValueText placeholder="Selecione a antecedência" />
+                </Select.Trigger>
+              </Select.Control>
+              <Select.Positioner>
+                <Select.Content bg="#2D3748" borderColor="rgba(255, 255, 255, 0.2)">
+                  <Select.Item item={{label: "1 hora antes", value: "1"}}>
+                    <Select.ItemText>1 hora antes</Select.ItemText>
+                  </Select.Item>
+                  <Select.Item item={{label: "6 horas antes", value: "6"}}>
+                    <Select.ItemText>6 horas antes</Select.ItemText>
+                  </Select.Item>
+                  <Select.Item item={{label: "1 dia antes", value: "24"}}>
+                    <Select.ItemText>1 dia antes</Select.ItemText>
+                  </Select.Item>
+                  <Select.Item item={{label: "2 dias antes", value: "48"}}>
+                    <Select.ItemText>2 dias antes</Select.ItemText>
+                  </Select.Item>
+                </Select.Content>
+              </Select.Positioner>
+            </Select.Root>
           </Box>
         </VStack>
       </Box>
 
-      {/* Mensagens Personalizadas */}
       <Box
         bg="rgba(255, 255, 255, 0.05)"
         borderRadius="xl"
@@ -236,33 +267,67 @@ export default function NotificationSettings() {
           <HStack spacing={4}>
             <Box flex="1">
               <Text color="gray.300" mb={2}>Tipo</Text>
-              <Select
-                value={customMessage.type}
-                onChange={(e) => setCustomMessage(prev => ({...prev, type: e.target.value}))}
-                bg="rgba(255, 255, 255, 0.1)"
-                borderColor="rgba(255, 255, 255, 0.2)"
-                color="white"
+              <Select.Root 
+                value={[customMessage.type]}
+                onValueChange={(e) => setCustomMessage(prev => ({...prev, type: e.value[0]}))}
               >
-                <option value="appointment" style={{background: '#2D3748'}}>Consulta</option>
-                <option value="exam" style={{background: '#2D3748'}}>Exame</option>
-                <option value="medication" style={{background: '#2D3748'}}>Medicação</option>
-                <option value="general" style={{background: '#2D3748'}}>Geral</option>
-              </Select>
+                <Select.Control>
+                  <Select.Trigger
+                    bg="rgba(255, 255, 255, 0.1)"
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    color="white"
+                  >
+                    <Select.ValueText placeholder="Selecione o tipo" />
+                  </Select.Trigger>
+                </Select.Control>
+                <Select.Positioner>
+                  <Select.Content bg="#2D3748" borderColor="rgba(255, 255, 255, 0.2)">
+                    <Select.Item item={{label: "Consulta", value: "appointment"}}>
+                      <Select.ItemText>Consulta</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item item={{label: "Exame", value: "exam"}}>
+                      <Select.ItemText>Exame</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item item={{label: "Medicação", value: "medication"}}>
+                      <Select.ItemText>Medicação</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item item={{label: "Geral", value: "general"}}>
+                      <Select.ItemText>Geral</Select.ItemText>
+                    </Select.Item>
+                  </Select.Content>
+                </Select.Positioner>
+              </Select.Root>
             </Box>
 
             <Box flex="1">
               <Text color="gray.300" mb={2}>Agendamento</Text>
-              <Select
-                value={customMessage.scheduling}
-                onChange={(e) => setCustomMessage(prev => ({...prev, scheduling: e.target.value}))}
-                bg="rgba(255, 255, 255, 0.1)"
-                borderColor="rgba(255, 255, 255, 0.2)"
-                color="white"
+              <Select.Root 
+                value={[customMessage.scheduling]}
+                onValueChange={(e) => setCustomMessage(prev => ({...prev, scheduling: e.value[0]}))}
               >
-                <option value="immediate" style={{background: '#2D3748'}}>Enviar agora</option>
-                <option value="1hour" style={{background: '#2D3748'}}>Em 1 hora</option>
-                <option value="tomorrow" style={{background: '#2D3748'}}>Amanhã</option>
-              </Select>
+                <Select.Control>
+                  <Select.Trigger
+                    bg="rgba(255, 255, 255, 0.1)"
+                    borderColor="rgba(255, 255, 255, 0.2)"
+                    color="white"
+                  >
+                    <Select.ValueText placeholder="Selecione o agendamento" />
+                  </Select.Trigger>
+                </Select.Control>
+                <Select.Positioner>
+                  <Select.Content bg="#2D3748" borderColor="rgba(255, 255, 255, 0.2)">
+                    <Select.Item item={{label: "Enviar agora", value: "immediate"}}>
+                      <Select.ItemText>Enviar agora</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item item={{label: "Em 1 hora", value: "1hour"}}>
+                      <Select.ItemText>Em 1 hora</Select.ItemText>
+                    </Select.Item>
+                    <Select.Item item={{label: "Amanhã", value: "tomorrow"}}>
+                      <Select.ItemText>Amanhã</Select.ItemText>
+                    </Select.Item>
+                  </Select.Content>
+                </Select.Positioner>
+              </Select.Root>
             </Box>
           </HStack>
 
@@ -290,7 +355,6 @@ export default function NotificationSettings() {
         </VStack>
       </Box>
 
-      {/* Ações */}
       <HStack spacing={4}>
         <Button
           colorScheme="teal"

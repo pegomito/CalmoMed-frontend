@@ -59,8 +59,7 @@ export default function FixBar() {
             <FaSearch color="rgba(255, 255, 255, 0.7)" size={16} />
           </Box>
         </Box>
-
-        {/* Menu do usuário */}
+        
         <Flex align="center" gap={4}>
           <Button
             variant="ghost"

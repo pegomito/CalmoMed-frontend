@@ -18,23 +18,6 @@ export default function GoogleMap({
   const [markerElements, setMarkerElements] = useState([]);
 
   useEffect(() => {
-    // Adicionar CSS para remover bordas do Google Maps
-    const style = document.createElement('style');
-    style.textContent = `
-      .gm-style div,
-      .gm-style div * {
-        border: none !important;
-        outline: none !important;
-      }
-      .gm-style .gm-style-iw,
-      .gm-style .gm-style-iw * {
-        border: none !important;
-        outline: none !important;
-        box-shadow: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-
     const initMap = async () => {
       if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
         setError('API Key do Google Maps não configurada');
@@ -133,10 +116,10 @@ export default function GoogleMap({
               left: 50%;
               transform: translateX(-50%);
               background: white;
-              border: 0 !important;
-              outline: 0 !important;
-              box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+              border: none;
+              outline: none;
               border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
               padding: ${isExpanded ? '16px' : '8px'};
               min-width: ${isExpanded ? '140px' : '140px'};
               max-width: ${isExpanded ? '320px' : '180px'};
@@ -184,6 +167,7 @@ export default function GoogleMap({
                     background: #2C7A7B;
                     color: white;
                     border: none;
+                    outline: none;
                     border-radius: 4px;
                     font-size: 10px;
                     cursor: pointer;
@@ -207,6 +191,7 @@ export default function GoogleMap({
               background: #2C7A7B;
               border: 3px solid white;
               border-radius: 50%;
+              box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             "></div>
           `;
         };
@@ -221,9 +206,8 @@ export default function GoogleMap({
             position: relative;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 0 !important;
-            outline: 0 !important;
-            box-shadow: none !important;
+            border: none;
+            outline: none;
           `;
           
           markerDiv.innerHTML = createMarkerContent(marker, false);
@@ -236,7 +220,7 @@ export default function GoogleMap({
           });
 
           markerElement.addListener('click', () => {
-            setExpandedMarker(prev => prev === markerId ? null : markerId);
+            setExpandedMarker(expandedMarker === markerId ? null : markerId);
           });
 
           initialMarkers.push(markerElement);
@@ -246,12 +230,7 @@ export default function GoogleMap({
 
         // Função global para atualizar marcadores sem reinicializar o mapa
         window.updateMapMarkers = (expandedId) => {
-          // Remover marcadores existentes
-          markerElements.forEach(el => {
-            if (el.map) {
-              el.map = null;
-            }
-          });
+          markerElements.forEach(el => el.map = null);
           
           const newMarkers = [];
           markers.forEach((marker, index) => {
@@ -263,9 +242,8 @@ export default function GoogleMap({
               position: relative;
               cursor: pointer;
               transition: all 0.3s ease;
-              border: 0 !important;
-              outline: 0 !important;
-              box-shadow: none !important;
+              border: none;
+              outline: none;
             `;
             
             markerDiv.innerHTML = createMarkerContent(marker, isExpanded);
@@ -278,7 +256,7 @@ export default function GoogleMap({
             });
 
             markerElement.addListener('click', () => {
-              setExpandedMarker(prev => prev === markerId ? null : markerId);
+              setExpandedMarker(expandedId === markerId ? null : markerId);
             });
 
             newMarkers.push(markerElement);
@@ -294,16 +272,6 @@ export default function GoogleMap({
     };
 
     initMap();
-
-    // Cleanup: remover o estilo quando o componente for desmontado
-    return () => {
-      const styles = document.querySelectorAll('style');
-      styles.forEach(styleEl => {
-        if (styleEl.textContent && styleEl.textContent.includes('.gm-style div')) {
-          styleEl.remove();
-        }
-      });
-    };
   }, [center, zoom, markers]);
 
   // UseEffect separado para atualizar apenas os marcadores quando expandedMarker muda

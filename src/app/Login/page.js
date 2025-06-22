@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -12,11 +13,11 @@ export default function LoginPage() {
   const registerLogin = (data) => {
     console.log("Login realizado:", data.email);
     
-    // Redireciona para o lobby
-    router.push('/Lobby');
+    router.push('/Lobby?tab=mapa');
   };
 
-  const registerSuccess = () => {
+  const registerSuccess = (userData) => {
+    console.log("Cadastro realizado:", userData);
     setIsRegistering(false);
   };
 
@@ -107,7 +108,7 @@ export default function LoginPage() {
             </Text>
             {isRegistering ? (
               <>
-                <RegisterInput onRegisterSuccess={registerSuccess} />
+                <RegisterInput onRegister={registerSuccess} />
                 <Button mt={2} colorScheme="gray" variant="solid" onClick={() => setIsRegistering(false)}>
                   Voltar ao Login
                 </Button>
@@ -126,6 +127,7 @@ export default function LoginPage() {
           </VStack>
         </Box>
       </Box>
+      <Toaster />
     </Box>
   );
 }

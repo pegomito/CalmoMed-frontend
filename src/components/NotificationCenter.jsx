@@ -7,17 +7,15 @@ import {
   Badge, 
   IconButton, 
   Button,
-  Heading,
-  useDisclosure
+  Heading
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { toaster } from "@/components/ui/toaster";
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Simulação de notificações
+  
   useEffect(() => {
     const mockNotifications = [
       {
@@ -72,12 +70,6 @@ export default function NotificationCenter() {
     );
   };
 
-  const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notif => ({ ...notif, read: true }))
-    );
-  };
-
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'urgent': return 'red';
@@ -88,14 +80,18 @@ export default function NotificationCenter() {
     }
   };
 
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'appointment': return '📅';
-      case 'exam_result': return '🩺';
-      case 'medication': return '💊';
-      case 'alert': return '⚠️';
-      default: return '📢';
+  const getPriorityText = (priority) => {
+    switch (priority) {
+      case 'urgent': return 'urgente';
+      case 'high': return 'alta';
+      case 'medium': return 'média';
+      case 'low': return 'baixa';
+      default: return 'normal';
     }
+  };
+
+  const getTypeIcon = (type) => {
+    return '•';
   };
 
   const formatTime = (timestamp) => {
@@ -127,21 +123,12 @@ export default function NotificationCenter() {
             </Badge>
           )}
         </HStack>
-        <Button
-          size="sm"
-          variant="outline"
-          colorScheme="teal"
-          onClick={markAllAsRead}
-          disabled={unreadCount === 0}
-        >
-          Marcar todas como lidas
-        </Button>
       </HStack>
 
       <Box
         bg="rgba(255, 255, 255, 0.05)"
         borderRadius="xl"
-        p={4}
+        p={6}
         border="1px solid rgba(255, 255, 255, 0.1)"
         maxH="600px"
         overflowY="auto"
@@ -151,11 +138,11 @@ export default function NotificationCenter() {
             <Text color="gray.400">Nenhuma notificação no momento</Text>
           </Box>
         ) : (
-          <VStack spacing={3} align="stretch">
+          <VStack spacing={4} align="stretch">
             {notifications.map((notification, index) => (
               <Box key={notification.id}>
                 <HStack
-                  p={4}
+                  p={6}
                   bg={notification.read ? "rgba(255, 255, 255, 0.02)" : "rgba(255, 255, 255, 0.08)"}
                   borderRadius="lg"
                   border={notification.read ? "1px solid rgba(255, 255, 255, 0.05)" : "1px solid rgba(74, 222, 128, 0.3)"}
@@ -163,7 +150,8 @@ export default function NotificationCenter() {
                   _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
                   onClick={() => markAsRead(notification.id)}
                   align="flex-start"
-                  spacing={3}
+                  spacing={4}
+                  minH="100px"
                 >
                   <Text fontSize="xl">{getTypeIcon(notification.type)}</Text>
                   
@@ -182,7 +170,7 @@ export default function NotificationCenter() {
                             colorScheme={getPriorityColor(notification.priority)} 
                             size="xs"
                           >
-                            {notification.priority}
+                            {getPriorityText(notification.priority)}
                           </Badge>
                         </HStack>
                         <Text
@@ -198,22 +186,6 @@ export default function NotificationCenter() {
                         <Text color="gray.500" fontSize="xs">
                           {formatTime(notification.timestamp)}
                         </Text>
-                        {notification.actionRequired && (
-                          <Button 
-                            size="xs" 
-                            colorScheme="teal" 
-                            variant="solid"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toaster.create({
-                                title: "Ação executada",
-                                description: "Redirecionando para mais detalhes...",
-                              });
-                            }}
-                          >
-                            Ver mais
-                          </Button>
-                        )}
                       </VStack>
                     </HStack>
                   </VStack>

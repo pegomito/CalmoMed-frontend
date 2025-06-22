@@ -7,14 +7,10 @@ import {
   Grid,
   Badge,
   Button,
-  HStack,
-  Select
+  HStack
 } from "@chakra-ui/react";
 import { useState, useMemo } from "react";
-// Temporarily remove import to test
-// import PostoCard from "./PostoCardSimple";
 
-// Dados mockados dos postos
 const postosData = [
   {
     id: 1,
@@ -185,7 +181,6 @@ const postosData = [
   }
 ];
 
-// Simple posto data
 const simplePostos = [
   {
     id: 1,
@@ -208,7 +203,6 @@ export default function PostosList() {
   const [selectedPosto, setSelectedPosto] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Usar os dados completos em vez dos simples
   const filteredPostos = useMemo(() => {
     return postosData.filter(posto => {
       const matchesSearch = posto.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -258,124 +252,159 @@ export default function PostosList() {
 
   return (
     <VStack spacing={6} align="stretch" h="100%">
-      {/* Header */}
-      <Box>
-        <Text fontSize="xl" fontWeight="bold" color="white" mb={2}>
-          Postos de Saúde - Chapecó/SC
+      <Box mb={5}>
+        <Text fontSize="2xl" fontWeight="bold" color="white" mb={3}>
+          🏥 Postos de Saúde - Chapecó/SC
         </Text>
-        <Text color="gray.300" fontSize="md">
-          Monitore a lotação em tempo real das UBS e ESF da região.
-        </Text>
+        
+        <HStack spacing={3} mb={4}>
+          <Badge colorScheme="green" px={3} py={2} borderRadius="full" fontSize="sm">
+            Baixa: {getStatsCount('baixa')}
+          </Badge>
+          <Badge colorScheme="yellow" px={3} py={2} borderRadius="full" fontSize="sm">
+            Média: {getStatsCount('média')}
+          </Badge>
+          <Badge colorScheme="orange" px={3} py={2} borderRadius="full" fontSize="sm">
+            Alta: {getStatsCount('alta')}
+          </Badge>
+          <Badge colorScheme="red" px={3} py={2} borderRadius="full" fontSize="sm">
+            Crítica: {getStatsCount('crítica')}
+          </Badge>
+        </HStack>
       </Box>
 
-      {/* Stats */}
-      <HStack spacing={4} flexWrap="wrap">
-        <Badge colorScheme="green" px={3} py={1} borderRadius="md">
-          Baixa: {getStatsCount('baixa')}
-        </Badge>
-        <Badge colorScheme="yellow" px={3} py={1} borderRadius="md">
-          Média: {getStatsCount('média')}
-        </Badge>
-        <Badge colorScheme="orange" px={3} py={1} borderRadius="md">
-          Alta: {getStatsCount('alta')}
-        </Badge>
-        <Badge colorScheme="red" px={3} py={1} borderRadius="md">
-          Crítica: {getStatsCount('crítica')}
-        </Badge>
-      </HStack>
-
-      {/* Filtros */}
-      <HStack spacing={4} flexWrap="wrap">
-        <Box flex="1" minW="200px">
-          <Input
-            placeholder="Buscar por nome ou endereço..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            bg="rgba(255, 255, 255, 0.1)"
-            border="1px solid rgba(255, 255, 255, 0.2)"
-            color="white"
-            _placeholder={{ color: "gray.400" }}
-            _focus={{ 
-              borderColor: "teal.300",
-              bg: "rgba(255, 255, 255, 0.15)"
-            }}
-          />
-        </Box>
-        <Box minW="150px">
-          <Text fontSize="sm" color="gray.400" mb={2}>Filtrar por lotação:</Text>
-          <HStack spacing={2} flexWrap="wrap">
-            <Button 
-              size="sm" 
-              variant={filterLotacao === "" ? "solid" : "ghost"}
-              colorScheme="teal"
+      <VStack spacing={4} align="stretch" mb={5}>
+        <Input
+          placeholder="Buscar posto..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          bg="rgba(255, 255, 255, 0.08)"
+          border="1px solid rgba(255, 255, 255, 0.15)"
+          color="white"
+          size="md"
+          h="45px"
+          borderRadius="xl"
+          _placeholder={{ color: "gray.400" }}
+          _focus={{ 
+            borderColor: "teal.300",
+            bg: "rgba(255, 255, 255, 0.12)"
+          }}
+        />
+        
+        <HStack spacing={6} flexWrap="wrap">
+          <HStack spacing={2}>
+            <Text fontSize="sm" color="gray.400" fontWeight="semibold">Lotação:</Text>
+            <Badge 
+              as="button"
+              colorScheme="teal" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterLotacao("")}
+              opacity={filterLotacao === "" ? 1 : 0.6}
             >
               Todos
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterLotacao === "baixa" ? "solid" : "ghost"}
-              colorScheme="green"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="green" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterLotacao("baixa")}
+              opacity={filterLotacao === "baixa" ? 1 : 0.6}
             >
               Baixa
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterLotacao === "média" ? "solid" : "ghost"}
-              colorScheme="yellow"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="yellow" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterLotacao("média")}
+              opacity={filterLotacao === "média" ? 1 : 0.6}
             >
               Média
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterLotacao === "alta" ? "solid" : "ghost"}
-              colorScheme="orange"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="orange" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterLotacao("alta")}
+              opacity={filterLotacao === "alta" ? 1 : 0.6}
             >
               Alta
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterLotacao === "crítica" ? "solid" : "ghost"}
-              colorScheme="red"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="red" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterLotacao("crítica")}
+              opacity={filterLotacao === "crítica" ? 1 : 0.6}
             >
               Crítica
-            </Button>
+            </Badge>
           </HStack>
-        </Box>
-        <Box minW="150px">
-          <Text fontSize="sm" color="gray.400" mb={2}>Filtrar por tipo:</Text>
-          <HStack spacing={2} flexWrap="wrap">
-            <Button 
-              size="sm" 
-              variant={filterTipo === "" ? "solid" : "ghost"}
-              colorScheme="teal"
+
+          <HStack spacing={2}>
+            <Text fontSize="sm" color="gray.400" fontWeight="semibold">Tipo:</Text>
+            <Badge 
+              as="button"
+              colorScheme="teal" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterTipo("")}
+              opacity={filterTipo === "" ? 1 : 0.6}
             >
               Todos
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterTipo === "Unidade Básica de Saúde" ? "solid" : "ghost"}
-              colorScheme="blue"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="blue" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterTipo("Unidade Básica de Saúde")}
+              opacity={filterTipo === "Unidade Básica de Saúde" ? 1 : 0.6}
             >
               UBS
-            </Button>
-            <Button 
-              size="sm" 
-              variant={filterTipo === "Estratégia Saúde da Família" ? "solid" : "ghost"}
-              colorScheme="purple"
+            </Badge>
+            <Badge 
+              as="button"
+              colorScheme="purple" 
+              px={3} 
+              py={1} 
+              borderRadius="full" 
+              fontSize="sm"
+              cursor="pointer"
               onClick={() => setFilterTipo("Estratégia Saúde da Família")}
+              opacity={filterTipo === "Estratégia Saúde da Família" ? 1 : 0.6}
             >
               ESF
-            </Button>
+            </Badge>
           </HStack>
-        </Box>
-      </HStack>
+        </HStack>
+      </VStack>
 
       {/* Lista de Postos */}
       <Box flex="1" overflowY="auto">
@@ -386,103 +415,49 @@ export default function PostosList() {
             </Text>
           </Box>
         ) : (
-          <Grid templateColumns="repeat(auto-fill, minmax(350px, 1fr))" gap={4}>
+          <Grid templateColumns="repeat(auto-fill, minmax(320px, 1fr))" gap={4}>
             {filteredPostos.map((posto) => (
               <Box
                 key={posto.id}
                 bg="rgba(255, 255, 255, 0.1)"
                 borderRadius="xl"
-                border="1px solid rgba(255, 255, 255, 0.2)"
                 p={4}
-                transition="all 0.3s ease"
+                transition="all 0.2s ease"
                 _hover={{ 
-                  transform: "translateY(-2px)", 
-                  boxShadow: "xl",
-                  bg: "rgba(255, 255, 255, 0.15)"
+                  bg: "rgba(255, 255, 255, 0.15)",
+                  transform: "translateY(-2px)",
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.2)"
                 }}
                 cursor="pointer"
                 onClick={() => openModal(posto)}
               >
-                {/* Header */}
-                <VStack align="stretch" spacing={2} mb={4}>
-                  <HStack justify="space-between" align="flex-start">
-                    <Text fontSize="lg" fontWeight="bold" color="white" noOfLines={2}>
-                      {posto.nome}
-                    </Text>
-                    <Badge 
-                      colorScheme={getStatusColor(posto.lotacao)} 
-                      fontSize="xs"
-                      px={2} 
-                      py={1}
-                      borderRadius="md"
-                    >
-                      {getStatusText(posto.lotacao)}
-                    </Badge>
+                <HStack justify="space-between" align="center" mb={2}>
+                  <HStack spacing={3}>
+                    <Text fontSize="2xl">🏥</Text>
+                    <VStack align="start" spacing={0}>
+                      <Text fontSize="lg" fontWeight="bold" color="white" noOfLines={1}>
+                        {posto.nome}
+                      </Text>
+                      <Text fontSize="sm" color="gray.400" noOfLines={1}>
+                        {posto.endereco}
+                      </Text>
+                    </VStack>
                   </HStack>
-                  <Text fontSize="sm" color="gray.300" noOfLines={1}>
-                    {posto.tipo}
-                  </Text>
-                </VStack>
+                  <Box
+                    w="10px"
+                    h="10px"
+                    borderRadius="50%"
+                    bg={posto.lotacao === 'baixa' ? '#22c55e' : posto.lotacao === 'média' ? '#eab308' : posto.lotacao === 'alta' ? '#f97316' : '#ef4444'}
+                  />
+                </HStack>
 
-                {/* Body */}
-                <VStack align="stretch" spacing={3} mb={4}>
-                  <Text fontSize="sm" color="gray.400" noOfLines={2}>
-                    {posto.endereco}
+                <HStack justify="space-between" align="center">
+                  <Text fontSize="sm" color="gray.400">
+                    Lotação {posto.lotacao}
                   </Text>
-                  
-                  <HStack spacing={4}>
-                    <Box>
-                      <Text fontSize="xs" color="gray.500">Atendimentos</Text>
-                      <Text fontSize="md" color="white" fontWeight="semibold">
-                        {posto.atendimentosHoje}
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontSize="xs" color="gray.500">Fila de Espera</Text>
-                      <Text fontSize="md" color="white" fontWeight="semibold">
-                        {posto.filaEspera}
-                      </Text>
-                    </Box>
-                    <Box>
-                      <Text fontSize="xs" color="gray.500">Tempo Médio</Text>
-                      <Text fontSize="md" color="white" fontWeight="semibold">
-                        {posto.tempoMedio}
-                      </Text>
-                    </Box>
-                  </HStack>
-
-                  {posto.mensagem && (
-                    <Box 
-                      bg="rgba(255, 255, 255, 0.1)" 
-                      p={2} 
-                      borderRadius="md"
-                      border="1px solid rgba(255, 255, 255, 0.2)"
-                    >
-                      <Text fontSize="xs" color="gray.400" mb={1}>Aviso:</Text>
-                      <Text fontSize="sm" color="gray.200" noOfLines={2}>
-                        {posto.mensagem}
-                      </Text>
-                    </Box>
-                  )}
-                </VStack>
-
-                {/* Footer */}
-                <HStack w="100%" justify="space-between" align="center">
-                  <Text fontSize="xs" color="gray.500">
-                    Atualizado há {posto.ultimaAtualizacao}
+                  <Text fontSize="sm" color="teal.300" fontWeight="semibold">
+                    Ver mais →
                   </Text>
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    color="teal.300"
-                    _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openModal(posto);
-                    }}
-                  >
-                    Ver Detalhes
-                  </Button>
                 </HStack>
               </Box>
             ))}

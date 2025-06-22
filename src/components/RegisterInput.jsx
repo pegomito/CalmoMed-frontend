@@ -1,6 +1,7 @@
 'use client';
 import { VStack, Input, Button, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import { toaster } from "@/components/ui/toaster";
 
 export default function RegisterInput({ onRegister }) {
   const [name, setName] = useState("");
@@ -13,8 +14,21 @@ export default function RegisterInput({ onRegister }) {
     if (name && email && password && confirmPassword) {
       if (password === confirmPassword) {
         onRegister({ name, email, password });
+        toaster.create({
+          title: "Cadastro realizado com sucesso!",
+          description: "Você pode fazer login agora.",
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+        });
       } else {
-        alert("As senhas não coincidem!");
+        toaster.create({
+          title: "Erro no cadastro",
+          description: "As senhas não coincidem!",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+        });
       }
     }
   };
@@ -22,7 +36,7 @@ export default function RegisterInput({ onRegister }) {
   return (
     <VStack spacing={4} align="stretch">
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white"  fontWeight="medium">
           Nome Completo
         </Text>
         <Input
@@ -38,7 +52,7 @@ export default function RegisterInput({ onRegister }) {
       </VStack>
 
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white" fontWeight="medium">
           Email
         </Text>
         <Input
@@ -54,7 +68,7 @@ export default function RegisterInput({ onRegister }) {
       </VStack>
 
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white"  fontWeight="medium">
           Senha
         </Text>
         <Input
@@ -70,7 +84,7 @@ export default function RegisterInput({ onRegister }) {
       </VStack>
 
       <VStack spacing={3} align="stretch">
-        <Text fontSize="sm" color="gray.600" fontWeight="medium">
+        <Text fontSize="sm" color="white"  fontWeight="medium">
           Confirmar Senha
         </Text>
         <Input
