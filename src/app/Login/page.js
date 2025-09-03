@@ -100,9 +100,6 @@ export default function LoginPage() {
             <Heading color="white" fontSize={40} fontWeight={800} textAlign="center">
               Bem Vindo!
             </Heading>
-            {/* <Text color="white" fontSize={39} fontWeight={700} textAlign="center">
-              Posto Calmo
-            </Text> */}
             <Text fontSize="lg" color="white" opacity={0.8} textAlign="center">
               Acesse sua conta ou cadastre-se para continuar.
             </Text>
