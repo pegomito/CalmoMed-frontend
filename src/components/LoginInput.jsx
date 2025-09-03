@@ -96,6 +96,7 @@ export default function LoginInput({ onLogin }) {
           placeholder="E-mail"
           onChange={applyChange}
           borderColor="white"
+          color="white"
           _placeholder={{ color: "white" }}
         />
         <Input
@@ -104,6 +105,7 @@ export default function LoginInput({ onLogin }) {
           placeholder="Senha"
           onChange={applyChange}
           borderColor="white"
+          color="white"
           _placeholder={{ color: "white" }}
         />
         <Button

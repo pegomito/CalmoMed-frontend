@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Box, Spinner, Text, VStack, HStack, Button } from '@chakra-ui/react';
+import { useSearch } from '@/contexts/SearchContext';
 
 export default function GoogleMap({ 
   center = { lat: -27.0945, lng: -52.6166 }, 
@@ -17,6 +18,7 @@ export default function GoogleMap({
   const [expandedMarker, setExpandedMarker] = useState(null);
   const [markerElements, setMarkerElements] = useState([]);
   const AdvancedMarkerRef = useRef(null);
+  const { highlightedMarker, setMapInstance } = useSearch();
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -77,6 +79,7 @@ export default function GoogleMap({
         });
 
         setMap(mapInstance);
+        setMapInstance(mapInstance);
         setIsLoaded(true);
 
         const getStatusColor = (status) => {
@@ -237,6 +240,7 @@ export default function GoogleMap({
     markers.forEach((marker, index) => {
       const markerId = marker.id || index;
       const isExpanded = expandedMarker === markerId;
+      const isHighlighted = highlightedMarker === markerId;
       
       const markerDiv = document.createElement('div');
       markerDiv.style.cssText = `
@@ -246,7 +250,20 @@ export default function GoogleMap({
         border: 0 !important;
         outline: 0 !important;
         box-shadow: none !important;
+        ${isHighlighted ? 'animation: pulse 1s infinite;' : ''}
       `;
+      
+      if (isHighlighted) {
+        const pulseStyle = document.createElement('style');
+        pulseStyle.textContent = `
+          @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+          }
+        `;
+        document.head.appendChild(pulseStyle);
+      }
       
       markerDiv.innerHTML = `
         <div style="
@@ -254,16 +271,17 @@ export default function GoogleMap({
           bottom: 25px;
           left: 50%;
           transform: translateX(-50%);
-          background: white;
-          border: 0 !important;
+          background: ${isHighlighted ? '#22c55e' : 'white'};
+          border: ${isHighlighted ? '3px solid #16a34a' : '0'} !important;
           outline: 0 !important;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+          box-shadow: ${isHighlighted ? '0 0 20px rgba(34, 197, 94, 0.6)' : '0 4px 10px rgba(0,0,0,0.12)'};
           border-radius: 8px;
           padding: ${isExpanded ? '16px' : '8px'};
           min-width: ${isExpanded ? '140px' : '140px'};
           max-width: ${isExpanded ? '320px' : '180px'};
           z-index: 1000;
           cursor: pointer;
+          transition: all 0.3s ease;
         ">
           <div style="
             display: flex;
@@ -273,7 +291,7 @@ export default function GoogleMap({
             <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;">🏥</div>
             <div style="
               font-weight: 600;
-              color: #333;
+              color: ${isHighlighted ? 'white' : '#333'};
               font-size: ${isExpanded ? '14px' : '12px'};
               flex: 1;
             ">${marker.title}</div>
@@ -342,7 +360,7 @@ export default function GoogleMap({
     });
 
     setMarkerElements(newMarkers);
-  }, [expandedMarker, map, markers]);
+  }, [expandedMarker, highlightedMarker, map, markers]);
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {

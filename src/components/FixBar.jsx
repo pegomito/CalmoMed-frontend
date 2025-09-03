@@ -33,12 +33,12 @@ export default function FixBar() {
     }
   };
 
-  const handleSearchClick = () => {
+  const searchClickInput = () => {
     searchPosto(localSearchTerm);
     setShowSuggestions(false);
   };
 
-  const handleSuggestionClick = (suggestion) => {
+  const suggestionClickInput = (suggestion) => {
     setLocalSearchTerm(suggestion);
     searchPosto(suggestion);
     setShowSuggestions(false);
@@ -111,7 +111,7 @@ export default function FixBar() {
             variant="ghost"
             color="white"
             _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
-            onClick={handleSearchClick}
+            onClick={searchClickInput}
             px={2}
           >
             
@@ -138,7 +138,7 @@ export default function FixBar() {
                   cursor="pointer"
                   color="gray.800"
                   _hover={{ bg: "gray.100" }}
-                  onClick={() => handleSuggestionClick(suggestion)}
+                  onClick={() => suggestionClickInput(suggestion)}
                   borderBottom={index < filteredSuggestions.length - 1 ? "1px solid" : "none"}
                   borderColor="gray.200"
                 >
