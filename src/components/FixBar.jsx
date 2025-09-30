@@ -56,8 +56,8 @@ export default function FixBar() {
       top="0" 
       left="0" 
       zIndex="1001"
-      bg="linear-gradient(135deg, #2C7A7B 0%, #1A365D 100%)"
-      boxShadow="0 2px 10px rgba(0,0,0,0.3)"
+      bg="rgba(93, 167, 167, 0.9)"
+      boxShadow="0 2px 10px rgba(0, 0, 0, 0.3)"
     >
       <Flex
         w="100%"

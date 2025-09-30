@@ -76,8 +76,9 @@ export default function LobbyPage() {
           
           </VStack>
         </Box>
-        <Box ml="250px" w="calc(100% - 250px)" h="100vh" background = {"linear-gradient(135deg, #1A202C 0%, #2D3748 50%, #4A5568 100%)"} p={6} mt="80px">
-          <Box h="100%" display="flex" flexDirection="column">
+        <Box ml="250px" w="calc(100% - 250px)" h="100vh" background ="rgba(30, 48, 63, 1)"
+       p={6} mt="80px">
+          <Box h="100%" display="flex" flexDirection="column">  
             {sidebarSection === "mapa" && (
               <VStack spacing={4} align="stretch" h="100%">
                 <Box>
