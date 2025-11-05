@@ -15,51 +15,20 @@ import { toaster } from "@/components/ui/toaster";
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
 
-  
   useEffect(() => {
-    const mockNotifications = [
-      {
-        id: 1,
-        type: "appointment",
-        priority: "high",
-        title: "Consulta Agendada",
-        message: "Você tem uma consulta marcada para amanhã às 14:00h na UBS Centro",
-        timestamp: new Date().toISOString(),
-        read: false,
-        actionRequired: true
-      },
-      {
-        id: 2,
-        type: "exam_result",
-        priority: "medium",
-        title: "Resultado de Exame",
-        message: "Seu exame de sangue está disponível. Procure a recepção.",
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        read: false,
-        actionRequired: false
-      },
-      {
-        id: 3,
-        type: "medication",
-        priority: "low",
-        title: "Lembrete de Medicação",
-        message: "Hora de tomar seu medicamento - Losartana 50mg",
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-        read: true,
-        actionRequired: false
-      },
-      {
-        id: 4,
-        type: "alert",
-        priority: "urgent",
-        title: "Alerta de Saúde",
-        message: "UBS Efapi com alta lotação. Considere UBS São Pedro para atendimento urgente.",
-        timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        read: false,
-        actionRequired: true
-      }
-    ];
-    setNotifications(mockNotifications);
+    // TODO: Implementar integração com API de notificações
+    // const fetchNotifications = async () => {
+    //   try {
+    //     const response = await notificationsService.getAll();
+    //     setNotifications(response.data);
+    //   } catch (error) {
+    //     console.error('Erro ao buscar notificações:', error);
+    //   }
+    // };
+    // fetchNotifications();
+    
+    // Por enquanto, iniciar com array vazio até implementar o backend de notificações
+    setNotifications([]);
   }, []);
 
   const markAsRead = (id) => {

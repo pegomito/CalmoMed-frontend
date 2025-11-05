@@ -1,0 +1,355 @@
+'use client';'use client';
+
+import { Box, VStack, Heading, Button, Text, Spinner } from "@chakra-ui/react";import { Box, VStack, Heading, Button, Text, Spinner } from "@chakra-ui/react";
+
+import { useState, useEffect } from "react";import { useState, useEffect } from "react";
+
+import { useSearchParams, useRouter } from "next/navigation";import { useSearchParams, useRouter } from "next/navigation";
+
+import FixBar from "@/components/FixBar";import FixBar from "@/components/FixBar";
+
+import GoogleMap from "@/components/GoogleMap";import GoogleMap from "@/components/GoogleMap";
+
+import NotificationCenter from "@/components/NotificationCenter";import NotificationCenter from "@/components/NotificationCenter";
+
+import PostosList from "@/components/PostosList";import NotificationSettings from "@/components/NotificationSettings";
+
+import { SearchProvider } from "@/contexts/SearchContext";import PostosList from "@/components/PostosList";
+
+import { useAuth } from "@/contexts/AuthContext";import { SearchProvider } from "@/contexts/SearchContext";
+
+import { postosService } from "@/services/api";import { useAuth } from "@/contexts/AuthContext";
+
+import { toaster } from "@/components/ui/toaster";import { postosService } from "@/services/api";
+
+import { toaster } from "@/components/ui/toaster";
+
+export default function LobbyPage() {
+
+  const [sidebarSection, setSidebarSection] = useState("mapa");export default function LobbyPage() {
+
+  const [postos, setPostos] = useState([]);  const [sidebarSection, setSidebarSection] = useState("mapa");
+
+  const [loading, setLoading] = useState(true);  const [postos, setPostos] = useState([]);
+
+  const searchParams = useSearchParams();  const [loading, setLoading] = useState(true);
+
+  const router = useRouter();  const searchParams = useSearchParams();
+
+  const { isAuthenticated } = useAuth();  const router = useRouter();
+
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+
+    // Verificar autenticação  useEffect(() => {
+
+    if (!isAuthenticated()) {    // Verificar autenticação
+
+      router.push('/Login');    if (!isAuthenticated()) {
+
+      return;      router.push('/Login');
+
+    }      return;
+
+    }
+
+    const tabParam = searchParams.get('tab');
+
+    if (tabParam) {    const tabParam = searchParams.get('tab');
+
+      setSidebarSection(tabParam);    if (tabParam) {
+
+    }      setSidebarSection(tabParam);
+
+    }
+
+    // Buscar postos do backend
+
+    fetchPostos();    // Buscar postos do backend
+
+  }, [searchParams]);    fetchPostos();
+
+  }, [searchParams]);
+
+  const fetchPostos = async () => {
+
+    setLoading(true);  const fetchPostos = async () => {
+
+    try {    setLoading(true);
+
+      const data = await postosService.getAll();    try {
+
+      setPostos(data);      const data = await postosService.getAll();
+
+    } catch (error) {      setPostos(data);
+
+      toaster.create({    } catch (error) {
+
+        title: "Erro",      toaster.create({
+
+        description: error.message || "Erro ao carregar postos",        title: "Erro",
+
+        type: "error",        description: error.message || "Erro ao carregar postos",
+
+      });        type: "error",
+
+    } finally {      });
+
+      setLoading(false);    } finally {
+
+    }      setLoading(false);
+
+  };    }
+
+  };
+
+  return (
+
+    <SearchProvider>  return (
+
+      <FixBar />    <SearchProvider>
+
+      <Box w="100%" h="100vh" display="flex">      <FixBar />
+
+        <Box      <Box w="100%" h="100vh" display="flex">
+
+          w="250px"        <Box
+
+          h="calc(100vh - 80px)"          w="250px"
+
+          background="rgba(21, 74, 90, 0.8)"          h="calc(100vh - 80px)"
+
+          color="white"          background="rgba(21, 74, 90, 0.8)"
+
+          position="fixed"          color="white"
+
+          left="0"          position="fixed"
+
+          top="80px"          left="0"
+
+          zIndex="1000"          top="80px"
+
+          p={4}          zIndex="1000"
+
+          boxShadow="xl"          p={4}
+
+        >          boxShadow="xl"
+
+          <VStack spacing={4} align="stretch">        >
+
+            <Heading textStyle="1x1" color={"rgb(255, 255, 255)"} fontWeight={"bold"} mb={4} textAlign="stretch">          <VStack spacing={4} align="stretch">
+
+              Menu Principal            <Heading textStyle="1x1" color={"rgb(255, 255, 255)"} fontWeight={"bold"} mb={4} textAlign="stretch">
+
+            </Heading>              Menu Principal
+
+            <Button            </Heading>
+
+              textStyle="lg"            <Button
+
+              variant={sidebarSection === "mapa" ? "solid" : "ghost"}              textStyle= "lg"
+
+              justifyContent="flex-start"              variant={sidebarSection === "mapa" ? "solid" : "ghost"}
+
+              color="white"              justifyContent="flex-start"
+
+              _hover={{ bg: "gray.700", color: "teal.300" }}              color="white"
+
+              bg={sidebarSection === "mapa" ? "teal.700" : undefined}              _hover={{ bg: "gray.700", color: "teal.300" }}
+
+              onClick={() => setSidebarSection("mapa")}              bg={sidebarSection === "mapa" ? "teal.700" : undefined}
+
+            >              onClick={() => setSidebarSection("mapa")}
+
+              Mapa            >
+
+            </Button>              Mapa
+
+            <Button            </Button>
+
+              textStyle="lg"            <Button
+
+              variant={sidebarSection === "postos" ? "solid" : "ghost"}              textStyle= "lg"
+
+              justifyContent="flex-start"              variant={sidebarSection === "postos" ? "solid" : "ghost"}
+
+              color="white"              justifyContent="flex-start"
+
+              _hover={{ bg: "gray.700", color: "teal.300" }}              color="white"
+
+              bg={sidebarSection === "postos" ? "teal.700" : undefined}              _hover={{ bg: "gray.700", color: "teal.300" }}
+
+              onClick={() => setSidebarSection("postos")}              bg={sidebarSection === "postos" ? "teal.700" : undefined}
+
+            >              onClick={() => setSidebarSection("postos")}
+
+              Postos            >
+
+            </Button>              Postos
+
+            <Button            </Button>
+
+              textStyle="lg"            <Button
+
+              variant={sidebarSection === "notificacoes" ? "solid" : "ghost"}              textStyle= "lg"
+
+              justifyContent="flex-start"              variant={sidebarSection === "notificacoes" ? "solid" : "ghost"}
+
+              color="white"              justifyContent="flex-start"
+
+              _hover={{ bg: "gray.700", color: "teal.300" }}              color="white"
+
+              bg={sidebarSection === "notificacoes" ? "teal.700" : undefined}              _hover={{ bg: "gray.700", color: "teal.300" }}
+
+              onClick={() => setSidebarSection("notificacoes")}              bg={sidebarSection === "notificacoes" ? "teal.700" : undefined}
+
+            >              onClick={() => setSidebarSection("notificacoes")}
+
+              Notificações            >
+
+            </Button>              Notificações
+
+          </VStack>            </Button>
+
+        </Box>          
+
+                  </VStack>
+
+        <Box ml="250px" w="calc(100% - 250px)" h="100vh" background="rgba(30, 48, 63, 1)" p={6} mt="80px">        </Box>
+
+          <Box h="100%" display="flex" flexDirection="column">          <Box ml="250px" w="calc(100% - 250px)" h="100vh" background ="rgba(30, 48, 63, 1)"
+
+            {sidebarSection === "mapa" && (       p={6} mt="80px">
+
+              <VStack spacing={4} align="stretch" h="100%">          <Box h="100%" display="flex" flexDirection="column">  
+
+                <Box>            {sidebarSection === "mapa" && (
+
+                  <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>              <VStack spacing={4} align="stretch" h="100%">
+
+                    Mapa de Postos de Saúde                <Box>
+
+                  </Text>                  <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
+
+                  <Text color="gray.300" fontSize="lg">                    Mapa de Postos de Saúde
+
+                    Visualize a localização das UBS e ESF de Chapecó e região.                  </Text>
+
+                  </Text>                  <Text color="gray.300" fontSize="lg">
+
+                </Box>                    Visualize a localização das UBS e ESF de Chapecó e região.
+
+                                  </Text>
+
+                {loading ? (                </Box>
+
+                  <Box display="flex" justifyContent="center" alignItems="center" h="100%">                
+
+                    <Spinner size="xl" color="teal.500" />                {loading ? (
+
+                  </Box>                  <Box display="flex" justifyContent="center" alignItems="center" h="100%">
+
+                ) : (                    <Spinner size="xl" color="teal.500" />
+
+                  <Box flex="1" borderRadius="xl" overflow="hidden">                  </Box>
+
+                    <GoogleMap                ) : (
+
+                      center={{ lat: -27.0945, lng: -52.6166 }}                  <Box flex="1" borderRadius="xl" overflow="hidden">
+
+                      zoom={13}                    <GoogleMap
+
+                      height="100%"                      center={{ lat: -27.0945, lng: -52.6166 }}
+
+                      markers={postos.map(posto => ({                      zoom={13}
+
+                        id: posto.id,                      height="100%"
+
+                        position: {                       markers={postos.map(posto => ({
+
+                          lat: parseFloat(posto.latitude),                         id: posto.id,
+
+                          lng: parseFloat(posto.longitude)                         position: { 
+
+                        },                          lat: parseFloat(posto.latitude), 
+
+                        title: posto.name,                          lng: parseFloat(posto.longitude) 
+
+                        type: "Posto de Saúde",                        },
+
+                        description: posto.name,                        title: posto.name,
+
+                        address: posto.address,                        type: "Posto de Saúde",
+
+                        lotacao: posto.crowding_info?.occupancyPercentage > 70 ? "alta" :                         description: posto.name,
+
+                                 posto.crowding_info?.occupancyPercentage > 40 ? "média" : "baixa",                        address: posto.address,
+
+                        filaAtual: posto.crowding_info?.reportedQueue?.toString() || "0",                        lotacao: posto.crowding_info?.occupancyPercentage > 70 ? "alta" : 
+
+                        avaliacao: posto.rating?.toString() || "0",                                 posto.crowding_info?.occupancyPercentage > 40 ? "média" : "baixa",
+
+                        services: posto.services || [],                        filaAtual: posto.crowding_info?.reportedQueue?.toString() || "0",
+
+                        specialties: posto.specialties || [],                        avaliacao: posto.rating?.toString() || "0",
+
+                        contact: posto.contact                        services: posto.services || [],
+
+                      }))}                        specialties: posto.specialties || [],
+
+                    />                        contact: posto.contact
+
+                  </Box>                      }))}
+
+                )}                    />
+
+              </VStack>                  </Box>
+
+            )}                )}
+
+                          </VStack>
+
+            {sidebarSection === "postos" && (            )}
+
+              <VStack spacing={6} align="stretch" h="100%">                        {sidebarSection === "postos" && (
+
+                <PostosList postos={postos} loading={loading} onRefresh={fetchPostos} />              <VStack spacing={6} align="stretch" h="100%">
+
+              </VStack>                <PostosList postos={postos} loading={loading} onRefresh={fetchPostos} />
+
+            )}              </VStack>
+
+                       )}
+
+            {sidebarSection === "notificacoes" && (           
+
+              <VStack spacing={6} align="stretch" h="100%">            {sidebarSection === "notificacoes" && (
+
+                <NotificationCenter />            {sidebarSection === "postos" && (
+
+              </VStack>              <VStack spacing={6} align="stretch" h="100%">
+
+            )}                <PostosList />
+
+          </Box>              </VStack>
+
+        </Box>            )}
+
+      </Box>           
+
+    </SearchProvider>            {sidebarSection === "notificacoes" && (
+
+  );              <VStack spacing={6} align="stretch" h="100%">
+
+}                <NotificationCenter />
+
+              </VStack>
+            )}
+            
+          </Box>
+        </Box>
+      </Box>
+    </SearchProvider>
+  );
+}
