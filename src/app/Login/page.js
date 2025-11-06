@@ -74,10 +74,10 @@ export default function LoginPage() {
           h="100%"
         >
           <Image
-            src="/images/Whisk_dadabc4c57.png"
+            src="/images/logo-.png"
             alt="Logo"
-            maxW="900px"
-            maxH="900px"
+            maxW="600px"
+            maxH="600px"
             objectFit="contain"
             filter="drop-shadow(0 10px 20px rgba(0,0,0,0.3))"
           />

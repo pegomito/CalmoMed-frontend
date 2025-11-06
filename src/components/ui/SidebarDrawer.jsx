@@ -11,7 +11,7 @@ const SidebarDrawer = () => {
         <Button 
           position="fixed" 
           top="4" 
-          left="4" 
+          left="10" 
           zIndex="1000"
           variant="outline" 
           size="sm"
