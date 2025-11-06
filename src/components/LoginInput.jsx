@@ -88,15 +88,34 @@ export default function LoginInput({ onLogin }) {
       const { authService } = await import('@/services/api');
       const response = await authService.forgotPassword(recoverEmail);
       
-      toaster.create({
-        title: "Email enviado!",
-        description: "Verifique sua caixa de entrada. O link é válido por 1 hora.",
-        type: "success",
-        duration: 6000
-      });
+      // Se estiver em desenvolvimento e receber o token/link diretamente
+      if (response.dev_token || response.dev_reset_link) {
+        console.log('🔑 Token de recuperação (DEV):', response.dev_token);
+        console.log('🔗 Link de recuperação (DEV):', response.dev_reset_link);
+        
+        // Abrir automaticamente o modal de reset com o token
+        setResetToken(response.dev_token);
+        setIsResetMode(true);
+        
+        toaster.create({
+          title: "Modo Desenvolvimento",
+          description: "Token gerado! Digite sua nova senha abaixo.",
+          type: "info",
+          duration: 8000
+        });
+      } else {
+        // Modo produção - email foi enviado
+        toaster.create({
+          title: "Email enviado!",
+          description: "Verifique sua caixa de entrada. O link é válido por 1 hora.",
+          type: "success",
+          duration: 6000
+        });
+        
+        // Fechar o modal após enviar o email
+        setDialogOpen(false);
+      }
       
-      // Fechar o modal após enviar o email
-      setDialogOpen(false);
       setRecoverEmail("");
     } catch (error) {
       toaster.create({

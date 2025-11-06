@@ -1,5 +1,5 @@
 'use client';
-import { Box, VStack, Heading, Button, Text, Spinner } from "@chakra-ui/react";
+import { Box, VStack, Heading, Button, Text, Spinner, Drawer, Portal, CloseButton, IconButton } from "@chakra-ui/react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import FixBar from "@/components/FixBar";
@@ -72,64 +72,115 @@ export default function LobbyPage() {
   return (
     <SearchProvider>
       <FixBar />
-      <Box w="100%" h="100vh" display="flex">
-        <Box
-          w="250px"
-          h="calc(100vh - 80px)"
-          background="rgba(21, 74, 90, 0.8)"
-          color="white"
-          position="fixed"
-          left="0"
-          top="80px"
-          zIndex="1000"
-          p={4}
-          boxShadow="xl"
-        >
-          <VStack spacing={4} align="stretch">
-            <Heading color="white" fontWeight="bold" mb={4}>
-              Menu Principal
-            </Heading>
-            <Button
-              variant={sidebarSection === "mapa" ? "solid" : "ghost"}
-              justifyContent="flex-start"
-              color="white"
-              _hover={{ bg: "gray.700", color: "teal.300" }}
-              bg={sidebarSection === "mapa" ? "teal.700" : undefined}
-              onClick={() => setSidebarSection("mapa")}
-            >
-              Mapa
-            </Button>
-            <Button
-              variant={sidebarSection === "postos" ? "solid" : "ghost"}
-              justifyContent="flex-start"
-              color="white"
-              _hover={{ bg: "gray.700", color: "teal.300" }}
-              bg={sidebarSection === "postos" ? "teal.700" : undefined}
-              onClick={() => setSidebarSection("postos")}
-            >
-              Postos
-            </Button>
-            <Button
-              variant={sidebarSection === "notificacoes" ? "solid" : "ghost"}
-              justifyContent="flex-start"
-              color="white"
-              _hover={{ bg: "gray.700", color: "teal.300" }}
-              bg={sidebarSection === "notificacoes" ? "teal.700" : undefined}
-              onClick={() => setSidebarSection("notificacoes")}
-            >
-              Notificações
-            </Button>
-          </VStack>
-        </Box>
+      
+      {/* Drawer Menu */}
+      <Drawer.Root placement="start">
+        <Drawer.Trigger asChild>
+          <IconButton
+            position="fixed"
+            top="20px"
+            left="20px"
+            zIndex="1001"
+            aria-label="Abrir menu"
+            size="lg"
+            background="rgba(21, 74, 90, 0.9)"
+            color="white"
+            _hover={{ bg: "teal.700" }}
+          >
+            ☰
+          </IconButton>
+        </Drawer.Trigger>
 
-        <Box
-          ml="250px"
-          w="calc(100% - 250px)"
-          h="100vh"
-          background="rgba(30, 48, 63, 1)"
-          p={6}
-          mt="80px"
-        >
+        <Portal>
+          <Drawer.Backdrop />
+          <Drawer.Positioner>
+            <Drawer.Content
+              background="rgba(21, 74, 90, 0.95)"
+              color="white"
+            >
+              <Drawer.Header borderBottomWidth="1px" borderColor="whiteAlpha.300">
+                <Drawer.Title color="white" fontWeight="bold">
+                  Menu Principal
+                </Drawer.Title>
+                <Text fontSize="sm" color="whiteAlpha.700">CalmoMed</Text>
+              </Drawer.Header>
+
+              <Drawer.Body pt="6">
+                <VStack gap="3" align="stretch">
+                  <Drawer.Context>
+                    {(api) => (
+                      <>
+                        <Button
+                          w="100%"
+                          justifyContent="flex-start"
+                          variant={sidebarSection === "mapa" ? "solid" : "ghost"}
+                          colorScheme={sidebarSection === "mapa" ? "teal" : undefined}
+                          color="white"
+                          _hover={{ bg: "teal.700" }}
+                          onClick={() => {
+                            setSidebarSection("mapa");
+                            api.setOpen(false);
+                          }}
+                        >
+                          Mapa
+                        </Button>
+
+                        <Button
+                          w="100%"
+                          justifyContent="flex-start"
+                          variant={sidebarSection === "postos" ? "solid" : "ghost"}
+                          colorScheme={sidebarSection === "postos" ? "teal" : undefined}
+                          color="white"
+                          _hover={{ bg: "teal.700" }}
+                          onClick={() => {
+                            setSidebarSection("postos");
+                            api.setOpen(false);
+                          }}
+                        >
+                          Postos
+                        </Button>
+
+                        <Button
+                          w="100%"
+                          justifyContent="flex-start"
+                          variant={sidebarSection === "notificacoes" ? "solid" : "ghost"}
+                          colorScheme={sidebarSection === "notificacoes" ? "teal" : undefined}
+                          color="white"
+                          _hover={{ bg: "teal.700" }}
+                          onClick={() => {
+                            setSidebarSection("notificacoes");
+                            api.setOpen(false);
+                          }}
+                        >
+                          Notificações
+                        </Button>
+                      </>
+                    )}
+                  </Drawer.Context>
+                </VStack>
+              </Drawer.Body>
+
+              <Drawer.Footer borderTopWidth="1px" borderColor="whiteAlpha.300">
+                <Text fontSize="xs" color="whiteAlpha.700">
+                  © {new Date().getFullYear()} CalmoMed
+                </Text>
+              </Drawer.Footer>
+
+              <Drawer.CloseTrigger asChild>
+                <CloseButton size="sm" color="white" />
+              </Drawer.CloseTrigger>
+            </Drawer.Content>
+          </Drawer.Positioner>
+        </Portal>
+      </Drawer.Root>
+
+      <Box
+        w="100%"
+        h="100vh"
+        background="rgba(30, 48, 63, 1)"
+        p={6}
+        mt="80px"
+      >
           <Box h="100%" display="flex" flexDirection="column">
             {loading ? (
               <VStack spacing={4} align="center" justify="center" h="100%">
@@ -143,11 +194,11 @@ export default function LobbyPage() {
                 {sidebarSection === "mapa" && (
                   <VStack spacing={4} align="stretch" h="100%">
                     <Box>
-                      <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
-                        Mapa de Postos de Saúde
-                      </Text>
+                      {/* <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
+                        Mapa 
+                      </Text> */}
                       <Text color="gray.300" fontSize="lg">
-                        Visualize a localização das UBS e ESF de Chapecó e região.
+                        Visualize a localização das Unidades de Saúde de sua Região
                       </Text>
                     </Box>
 
@@ -199,7 +250,6 @@ export default function LobbyPage() {
             )}
           </Box>
         </Box>
-      </Box>
     </SearchProvider>
   );
 }
