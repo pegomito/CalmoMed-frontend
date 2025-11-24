@@ -176,7 +176,7 @@ export default function GoogleMap({
             bg="rgba(45, 122, 123, 0.9)"
             _hover={{ bg: "rgba(45, 122, 123, 1)" }}
           >
-            📍 Minha Localização
+            Minha Localização
           </Button>
         </HStack>
       )}

@@ -1,11 +1,13 @@
 'use client';
-import { Box, VStack, Heading, Button, Text, Spinner, Drawer, Portal, CloseButton, IconButton } from "@chakra-ui/react";
+import { Box, VStack, HStack, Heading, Button, Text, Spinner, Drawer, Portal, CloseButton, IconButton } from "@chakra-ui/react";
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import FixBar from "@/components/FixBar";
 import GoogleMap from "@/components/GoogleMap";
 import NotificationCenter from "@/components/NotificationCenter";
 import PostosList from "@/components/PostosList";
+import OccupancyStats from "@/components/OccupancyStats";
+import PostoCreate from "@/components/PostoCreate";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster } from "@/components/ui/toaster";
@@ -14,6 +16,7 @@ export default function LobbyPage() {
   const [sidebarSection, setSidebarSection] = useState("mapa");
   const [postos, setPostos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -87,7 +90,7 @@ export default function LobbyPage() {
             color="white"
             _hover={{ bg: "teal.700" }}
           >
-            ☰
+            Menu
           </IconButton>
         </Drawer.Trigger>
 
@@ -194,12 +197,10 @@ export default function LobbyPage() {
                 {sidebarSection === "mapa" && (
                   <VStack spacing={4} align="stretch" h="100%">
                     <Box>
-                      {/* <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
-                        Mapa 
-                      </Text> */}
-                      <Text color="gray.300" fontSize="lg">
+                      <Text color="gray.300" fontSize="lg" mb={4}>
                         Visualize a localização das Unidades de Saúde de sua Região
                       </Text>
+                      <OccupancyStats postos={postos} />
                     </Box>
 
                     <Box flex="1" borderRadius="xl" overflow="hidden">
@@ -216,12 +217,23 @@ export default function LobbyPage() {
                 {sidebarSection === "postos" && (
                   <VStack spacing={4} align="stretch" h="100%">
                     <Box>
-                      <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
-                        Lista de Postos
-                      </Text>
-                      <Text color="gray.300" fontSize="lg">
-                        Encontrados {postos.length} postos de saúde
-                      </Text>
+                      <HStack justify="space-between" align="center" mb={2}>
+                        <VStack align="start" spacing={1}>
+                          <Text fontSize="3xl" fontWeight="bold" color="white">
+                            Lista de Postos
+                          </Text>
+                          <Text color="gray.300" fontSize="lg">
+                            Encontrados {postos.length} postos de saúde
+                          </Text>
+                        </VStack>
+                        <Button
+                          colorScheme="teal"
+                          size="lg"
+                          onClick={() => setIsCreateModalOpen(true)}
+                        >
+                          + Adicionar Posto
+                        </Button>
+                      </HStack>
                     </Box>
 
                     <Box flex="1" overflowY="auto">
@@ -250,6 +262,12 @@ export default function LobbyPage() {
             )}
           </Box>
         </Box>
+
+      <PostoCreate
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={fetchPostos}
+      />
     </SearchProvider>
   );
 }

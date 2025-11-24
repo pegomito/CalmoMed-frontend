@@ -50,6 +50,8 @@ export default function LoginInput({ onLogin }) {
         description: "Preencha todos os campos obrigatórios!",
         type: "error",
       });
+
+      
       return;
     }
 
@@ -88,22 +90,6 @@ export default function LoginInput({ onLogin }) {
       const { authService } = await import('@/services/api');
       const response = await authService.forgotPassword(recoverEmail);
       
-      // Se estiver em desenvolvimento e receber o token/link diretamente
-      if (response.dev_token || response.dev_reset_link) {
-        console.log('🔑 Token de recuperação (DEV):', response.dev_token);
-        console.log('🔗 Link de recuperação (DEV):', response.dev_reset_link);
-        
-        // Abrir automaticamente o modal de reset com o token
-        setResetToken(response.dev_token);
-        setIsResetMode(true);
-        
-        toaster.create({
-          title: "Modo Desenvolvimento",
-          description: "Token gerado! Digite sua nova senha abaixo.",
-          type: "info",
-          duration: 8000
-        });
-      } else {
         // Modo produção - email foi enviado
         toaster.create({
           title: "Email enviado!",
@@ -114,7 +100,7 @@ export default function LoginInput({ onLogin }) {
         
         // Fechar o modal após enviar o email
         setDialogOpen(false);
-      }
+      
       
       setRecoverEmail("");
     } catch (error) {
@@ -236,7 +222,9 @@ export default function LoginInput({ onLogin }) {
           colorScheme="blue"
           loading={loading}
           disabled={loading}
+          
         >
+          
           {loading ? "Entrando..." : "Entrar"}
         </Button>
       </Stack>
@@ -265,15 +253,15 @@ export default function LoginInput({ onLogin }) {
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 zIndex: 1300,
-                border: "2px solid #667eea",
+                
               }} >
               <Dialog.Header>
-                <Dialog.Title style={{ color: "#667eea", fontWeight: "bold", fontSize: "20px" }}>
-                  {isResetMode ? "🔐 Redefinir Senha" : "📧 Recuperar Senha"}
+                <Dialog.Title style={{ color: "#258f78ff", fontWeight: "bold", fontSize: "20px" }}>
+                  {isResetMode ? " Redefinir Senha" : " Recuperar Senha"}
                 </Dialog.Title>
               </Dialog.Header>
               <Dialog.Body>
-                <Text mb={4} style={{ color: "#555", fontSize: "15px" }}>
+                <Text mb={4} style={{ color: "#000000ff", fontSize: "15px" }}>
                   {isResetMode
                     ? "Digite sua nova senha para completar a recuperação."
                     : "Digite seu e-mail para receber o link de recuperação."}
@@ -307,8 +295,8 @@ export default function LoginInput({ onLogin }) {
                         type="email"
                         value={recoverEmail}
                         onChange={e => setRecoverEmail(e.target.value)}
-                        borderColor="#667eea"
-                        _focus={{ borderColor: "#667eea", boxShadow: "0 0 0 1px #667eea" }}
+                        borderColor="#000000ff"
+                        _focus={{ borderColor: "#000000ff", boxShadow: "0 0 0 1px #667eea" }}
                         size="lg"
                       />
                       <Button 

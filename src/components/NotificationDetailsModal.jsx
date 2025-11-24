@@ -47,11 +47,11 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'appointment': return '📅';
-      case 'exam_result': return '🩺';
-      case 'medication': return '💊';
-      case 'alert': return '⚠️';
-      default: return '📢';
+  case 'appointment': return 'Agd.';
+  case 'exam_result': return 'Ex.';
+  case 'medication': return 'Med.';
+  case 'alert': return '!';
+  default: return 'Not.';
     }
   };
 
@@ -66,7 +66,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              📅 Ver Agenda
+              Ver Agenda
             </Button>
             <Button
               size="sm"
@@ -74,7 +74,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              🗺️ Ver Localização
+              Ver Localização
             </Button>
           </HStack>
         );
@@ -87,7 +87,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              📄 Baixar Resultado
+              Baixar Resultado
             </Button>
             <Button
               size="sm"
@@ -95,7 +95,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              👨‍⚕️ Agendar Retorno
+              Agendar Retorno
             </Button>
           </HStack>
         );
@@ -116,7 +116,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              💊 Ver Medicamentos
+              Ver Medicamentos
             </Button>
           </HStack>
         );
@@ -129,7 +129,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              🗺️ Ver Alternativas
+              Ver Alternativas
             </Button>
             <Button
               size="sm"
@@ -137,7 +137,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               color="black"
               _hover={{ bg: "gray.100" }}
             >
-              📍 Traçar Rota
+              Traçar Rota
             </Button>
           </HStack>
         );
@@ -202,7 +202,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
       <DialogContent bg="gray.800" color="white" borderRadius="xl" border="1px solid rgba(255, 255, 255, 0.1)">
         <DialogHeader pb={2}>
           <HStack spacing={3}>
-            <Text fontSize="2xl">{getTypeIcon(notification.type)}</Text>
+              <Text fontSize="2xl">Agd.</Text>
             <VStack align="start" spacing={1}>
               <DialogTitle fontSize="lg" fontWeight="bold">
                 {notification.title}
@@ -234,7 +234,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               <Card bg="rgba(255, 255, 255, 0.05)" border="1px solid rgba(255, 255, 255, 0.1)">
                 <CardBody>
                   <Text fontSize="sm" fontWeight="semibold" mb={3} color="gray.300">
-                    📋 Detalhes
+                      Detalhes
                   </Text>
                   <VStack spacing={2} align="stretch">
                     {detailedInfo.details.map((detail, index) => (
@@ -256,7 +256,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
               <Card bg="rgba(74, 222, 128, 0.1)" border="1px solid rgba(74, 222, 128, 0.3)">
                 <CardBody>
                   <Text fontSize="sm" fontWeight="semibold" mb={2} color="green.300">
-                    💡 Instruções
+                      Instruções
                   </Text>
                   <Text fontSize="xs" color="gray.200" lineHeight="1.5">
                     {detailedInfo.instructions}
@@ -270,7 +270,7 @@ export default function NotificationDetailsModal({ isOpen, onClose, notification
                 <Box height="1px" bg="gray.600" my={4} />
                 <VStack spacing={3}>
                   <Text fontSize="sm" fontWeight="semibold" color="gray.300">
-                    🚀 Ações Disponíveis
+                      Ações Disponíveis
                   </Text>
                   {getActionButtons(notification.type)}
                 </VStack>

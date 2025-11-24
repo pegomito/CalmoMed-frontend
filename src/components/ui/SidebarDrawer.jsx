@@ -17,7 +17,7 @@ const SidebarDrawer = () => {
           size="sm"
           aria-label="Open menu"
         >
-          ☰
+          Menu
         </Button>
       </Drawer.Trigger>
       

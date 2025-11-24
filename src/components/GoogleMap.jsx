@@ -114,7 +114,7 @@ export default function GoogleMap({
                 align-items: center;
                 margin-bottom: ${isExpanded ? '8px' : '4px'};
               ">
-                <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;">🏥</div>
+                <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;"></div>
                 <div style="
                   font-weight: 600;
                   color: #333;
@@ -288,7 +288,7 @@ export default function GoogleMap({
             align-items: center;
             margin-bottom: ${isExpanded ? '8px' : '4px'};
           ">
-            <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;">🏥</div>
+            <div style="font-size: ${isExpanded ? '20px' : '16px'}; margin-right: 6px;"></div>
             <div style="
               font-weight: 600;
               color: ${isHighlighted ? 'white' : '#333'};
@@ -447,7 +447,7 @@ export default function GoogleMap({
             bg="rgba(45, 122, 123, 0.9)"
             _hover={{ bg: "rgba(45, 122, 123, 1)" }}
           >
-            📍 Minha Localização
+            Minha Localização
           </Button>
         </HStack>
       )}

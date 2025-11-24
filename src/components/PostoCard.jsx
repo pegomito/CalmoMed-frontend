@@ -38,7 +38,7 @@ export default function PostoCard({ posto }) {
       >
         <HStack justify="space-between" align="center" mb={2}>
           <HStack spacing={3}>
-            <Text fontSize="2xl">🏥</Text>
+            <Text fontSize="2xl"></Text>
             <VStack align="start" spacing={0}>
               <Text fontSize="lg" fontWeight="bold" color="white" noOfLines={1}>
                 {posto.nome}

@@ -9,8 +9,12 @@ import {
   Grid,
   GridItem
 } from "@chakra-ui/react";
+import { useState } from "react";
+import ReportOccupancyModal from "./ReportOccupancyModal";
 
 export default function PostoDetailsModal({ isOpen, onClose, posto }) {
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
   if (!posto) return null;
 
   const getStatusColor = (status) => {
@@ -85,7 +89,7 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                   color="gray.600"
                   _hover={{ bg: "gray.100" }}
                 >
-                  ✕
+                  X
                 </Button>
               </HStack>
             </HStack>
@@ -109,93 +113,114 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
               <GridItem>
                 <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Atendimentos Hoje</Text>
+                  <Text fontSize="sm" color="gray.500" mb={1}>Pessoas na Fila</Text>
                   <Text fontSize="2xl" color="blue.600" fontWeight="bold">
-                    {posto.atendimentosHoje}
+                    {posto.crowding_info?.reportedQueue || 0}
                   </Text>
                 </Box>
               </GridItem>
               <GridItem>
                 <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Fila de Espera</Text>
+                  <Text fontSize="sm" color="gray.500" mb={1}>Taxa de Ocupação</Text>
                   <Text fontSize="2xl" color="orange.600" fontWeight="bold">
-                    {posto.filaEspera}
+                    {posto.crowding_info?.occupancyPercentage || 0}%
                   </Text>
                 </Box>
               </GridItem>
               <GridItem>
                 <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Tempo Médio</Text>
-                  <Text fontSize="2xl" color="purple.600" fontWeight="bold">
-                    {posto.tempoMedio}
+                  <Text fontSize="sm" color="gray.500" mb={1}>Última Atualização</Text>
+                  <Text fontSize="lg" color="purple.600" fontWeight="bold">
+                    {posto.crowding_info?.lastUpdate 
+                      ? new Date(posto.crowding_info.lastUpdate).toLocaleString('pt-BR', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                      : 'Sem dados'}
                   </Text>
                 </Box>
               </GridItem>
               <GridItem>
                 <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Capacidade</Text>
-                  <Text fontSize="2xl" color="green.600" fontWeight="bold">
-                    {posto.capacidade}
+                  <Text fontSize="sm" color="gray.500" mb={1}>Distância Média</Text>
+                  <Text fontSize="lg" color="green.600" fontWeight="bold">
+                    {posto.crowding_info?.distance_to_posto 
+                      ? `${Math.round(posto.crowding_info.distance_to_posto)}m`
+                      : 'N/A'}
                   </Text>
                 </Box>
               </GridItem>
             </Grid>
 
-            <Box>
-              <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
-                Horário de Funcionamento
-              </Text>
-              <Text fontSize="md" color="gray.600">
-                {posto.horarioFuncionamento}
-              </Text>
-            </Box>
-
-            <Box>
-              <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
-                Serviços Disponíveis
-              </Text>
-              <VStack align="stretch" spacing={1}>
-                {posto.servicos?.map((servico, index) => (
-                  <Text key={index} fontSize="sm" color="gray.600">
-                    • {servico}
-                  </Text>
-                ))}
-              </VStack>
-            </Box>
-
-            {posto.mensagem && (
-              <Box 
-                bg="blue.50" 
-                p={4} 
-                borderRadius="md"
-                border="1px solid"
-                borderColor="blue.200"
-              >
-                <Text fontSize="sm" fontWeight="semibold" color="blue.800" mb={2}>
-                  Avisos e Informações:
+            {posto.specialties && Array.isArray(posto.specialties) && posto.specialties.length > 0 && (
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
+                  Especialidades Disponíveis
                 </Text>
-                <Text fontSize="sm" color="blue.700">
-                  {posto.mensagem}
-                </Text>
+                <VStack align="stretch" spacing={1}>
+                  {posto.specialties.map((spec, index) => (
+                    <Text key={index} fontSize="sm" color="gray.600">
+                      • {spec}
+                    </Text>
+                  ))}
+                </VStack>
               </Box>
             )}
 
-            <Box>
-              <Text fontSize="xs" color="gray.500">
-                Última atualização: há {posto.ultimaAtualizacao}
+            {posto.services && Array.isArray(posto.services) && posto.services.length > 0 && (
+              <Box>
+                <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
+                  Serviços Disponíveis
+                </Text>
+                <VStack align="stretch" spacing={1}>
+                  {posto.services.map((servico, index) => (
+                    <Text key={index} fontSize="sm" color="gray.600">
+                      • {servico}
+                    </Text>
+                  ))}
+                </VStack>
+              </Box>
+            )}
+
+            <Box 
+              bg="blue.50" 
+              p={4} 
+              borderRadius="md"
+              border="1px solid"
+              borderColor="blue.200"
+            >
+              <Text fontSize="sm" fontWeight="semibold" color="blue.800" mb={2}>
+                Como Reportar Ocupação:
+              </Text>
+              <Text fontSize="sm" color="blue.700">
+                Ajude a comunidade! Clique em "Reportar Ocupação" para informar quantas pessoas você vê na fila ou sala de espera. Seus dados ajudam outros usuários a planejar melhor suas visitas.
               </Text>
             </Box>
           </VStack>
         </Box>
 
         <Box p={6} borderTop="1px solid" borderColor="gray.200">
-          <HStack justify="flex-end">
+          <HStack justify="space-between">
+            <Button 
+              onClick={() => setIsReportModalOpen(true)} 
+              colorScheme="teal"
+            >
+              Reportar Ocupação
+            </Button>
             <Button onClick={onClose} colorScheme="gray">
               Fechar
             </Button>
           </HStack>
         </Box>
       </Box>
+
+      <ReportOccupancyModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        posto={posto}
+      />
     </>
   );
 }
