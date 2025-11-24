@@ -1,5 +1,5 @@
 'use client';
-import { Box, Flex, Input, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, Input, Text, Button, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaSearch, FaUserCircle, FaCog } from "react-icons/fa";
@@ -10,26 +10,15 @@ export default function FixBar() {
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { searchPosto } = useSearch();
+  const { searchPosto, postos } = useSearch();
   const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const postosSuggestions = [
-    "UBS Centro",
-    "UBS Efapi", 
-    "ESF Bela Vista",
-    "UBS Jardim América",
-    "UBS Passo dos Fortes",
-    "UBS Santa Maria",
-    "UBS São Pedro",
-    "UBS São Cristóvão"
-  ];
-
-  const filteredSuggestions = postosSuggestions.filter(posto =>
-    posto.toLowerCase().includes(localSearchTerm.toLowerCase()) && localSearchTerm.length > 0
+  const filteredSuggestions = postos.filter(posto =>
+    posto.name?.toLowerCase().includes(localSearchTerm.toLowerCase()) && localSearchTerm.length > 0
   );
 
   const handleSearch = (e) => {
@@ -71,7 +60,7 @@ export default function FixBar() {
         px={6}
         align="center"
         justify="space-between"
-        h="85px"
+        h="80px"
       >
         <Flex align="center" gap={3}>
           <Image
@@ -137,18 +126,21 @@ export default function FixBar() {
               maxH="200px"
               overflowY="auto"
             >
-              {filteredSuggestions.map((suggestion, index) => (
+              {filteredSuggestions.map((suggestion) => (
                 <Box
-                  key={index}
+                  key={suggestion.id}
                   p={3}
                   cursor="pointer"
                   color="gray.800"
                   _hover={{ bg: "gray.100" }}
-                  onClick={() => suggestionClickInput(suggestion)}
-                  borderBottom={index < filteredSuggestions.length - 1 ? "1px solid" : "none"}
+                  onClick={() => suggestionClickInput(suggestion.name)}
+                  borderBottom="1px solid"
                   borderColor="gray.200"
                 >
-                  <Text fontSize="sm">{suggestion}</Text>
+                  <VStack align="start" spacing={0}>
+                    <Text fontSize="sm" fontWeight="medium">{suggestion.name}</Text>
+                    <Text fontSize="xs" color="gray.600">{suggestion.address}</Text>
+                  </VStack>
                 </Box>
               ))}
             </Box>

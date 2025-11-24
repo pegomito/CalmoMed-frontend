@@ -17,26 +17,43 @@ export function SearchProvider({ children }) {
       return;
     }
 
-    const foundPosto = postos.find(posto => 
-      posto.name?.toLowerCase().includes(term.toLowerCase()) ||
-      posto.id?.toString().toLowerCase().includes(term.toLowerCase()) ||
-      posto.address?.toLowerCase().includes(term.toLowerCase())
+    const termLower = term.toLowerCase();
+    
+    // Primeiro tenta busca exata pelo nome
+    let foundPosto = postos.find(posto => 
+      posto.name?.toLowerCase() === termLower
     );
+    
+    // Se não encontrou, busca parcial (contém o termo)
+    if (!foundPosto) {
+      foundPosto = postos.find(posto => 
+        posto.name?.toLowerCase().includes(termLower) ||
+        posto.id?.toString().toLowerCase() === termLower ||
+        posto.address?.toLowerCase().includes(termLower)
+      );
+    }
 
     if (foundPosto && mapInstance) {
+      console.log('Posto encontrado:', foundPosto);
+      
       const position = {
         lat: parseFloat(foundPosto.latitude),
         lng: parseFloat(foundPosto.longitude)
       };
       
-      mapInstance.setCenter(position);
-      mapInstance.setZoom(16);
+      // Animar pan + zoom suavemente
+      mapInstance.panTo(position);
+      setTimeout(() => {
+        mapInstance.setZoom(16);
+      }, 500);
       
       setHighlightedMarker(foundPosto.id);
       
       setTimeout(() => {
         setHighlightedMarker(null);
       }, 3000);
+    } else {
+      console.log('Posto não encontrado. Termo:', term, 'Postos disponíveis:', postos);
     }
   };
 

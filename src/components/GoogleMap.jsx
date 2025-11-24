@@ -19,6 +19,7 @@ export default function GoogleMap({
   const [markerElements, setMarkerElements] = useState([]);
   const AdvancedMarkerRef = useRef(null);
   const { highlightedMarker, setMapInstance } = useSearch();
+  const mapInstanceRef = useRef(null);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -38,6 +39,11 @@ export default function GoogleMap({
     document.head.appendChild(style);
 
     const initMap = async () => {
+      if (!mapRef.current) {
+        console.error('mapRef.current is null');
+        return;
+      }
+
       if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
         setError('API Key do Google Maps não configurada');
         return;
@@ -79,7 +85,6 @@ export default function GoogleMap({
         });
 
         setMap(mapInstance);
-        setMapInstance(mapInstance);
         setIsLoaded(true);
 
         const getStatusColor = (status) => {
@@ -225,7 +230,121 @@ export default function GoogleMap({
         }
       });
     };
-  }, [center, zoom, markers]);
+  }, []);
+
+  // Atualizar contexto quando o mapa for criado (useEffect separado para evitar loop)
+  useEffect(() => {
+    if (map && !mapInstanceRef.current) {
+      setMapInstance(map);
+      mapInstanceRef.current = map;
+    }
+  }, [map]);
+
+  // Atualizar markers quando a lista de markers mudar (sem reinicializar o mapa)
+  useEffect(() => {
+    if (!map || !AdvancedMarkerRef.current || markers.length === 0) return;
+
+    // Limpar markers antigos
+    markerElements.forEach(el => {
+      if (el.map) {
+        el.map = null;
+      }
+    });
+
+    // Criar novos markers
+    const newMarkers = [];
+    markers.forEach((marker, index) => {
+      const markerId = marker.id || index;
+      
+      const markerDiv = document.createElement('div');
+      markerDiv.style.cssText = `
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+      `;
+      
+      markerDiv.innerHTML = `
+        <div style="
+          position: absolute;
+          bottom: 25px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: white;
+          border: 0 !important;
+          outline: 0 !important;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+          border-radius: 8px;
+          padding: 8px;
+          min-width: 140px;
+          max-width: 180px;
+          z-index: 1000;
+          cursor: pointer;
+        ">
+          <div style="
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+          ">
+            <div style="font-size: 16px; margin-right: 6px;"></div>
+            <div style="
+              font-weight: 600;
+              color: #333;
+              font-size: 12px;
+              flex: 1;
+            ">${marker.title}</div>
+            <div style="
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: ${(() => {
+                switch(marker.lotacao) {
+                  case 'baixa': return '#22c55e';
+                  case 'média': return '#eab308';
+                  case 'alta': return '#ef4444';
+                  default: return '#6b7280';
+                }
+              })()};
+            "></div>
+          </div>
+          
+          <div style="
+            font-size: 10px;
+            color: #666;
+            line-height: 1.3;
+          ">
+            <div>Lotação: ${marker.lotacao || 'baixa'}</div>
+            <div>Espera: ${marker.tempoEspera || '15min'}</div>
+          </div>
+        </div>
+        
+        <div style="
+          width: 20px;
+          height: 20px;
+          background: #2C7A7B;
+          border: 3px solid white;
+          border-radius: 50%;
+        "></div>
+      `;
+
+      const markerElement = new AdvancedMarkerRef.current({
+        map: map,
+        position: marker.position,
+        content: markerDiv,
+        title: marker.title,
+      });
+
+      markerElement.addListener('click', () => {
+        setExpandedMarker(prev => prev === markerId ? null : markerId);
+      });
+
+      newMarkers.push(markerElement);
+    });
+
+    setMarkerElements(newMarkers);
+  }, [map, markers]);
 
   useEffect(() => {
     if (!map || markerElements.length === 0 || !AdvancedMarkerRef.current) return;
