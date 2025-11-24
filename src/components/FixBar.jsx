@@ -1,7 +1,7 @@
 'use client';
 import { Box, Flex, Input, Text, Button } from "@chakra-ui/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaSearch, FaUserCircle, FaCog } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { useSearch } from "@/contexts/SearchContext";
@@ -9,8 +9,13 @@ import { useSearch } from "@/contexts/SearchContext";
 export default function FixBar() {
   const [localSearchTerm, setLocalSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { searchPosto } = useSearch();
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const postosSuggestions = [
     "UBS Centro",
@@ -66,14 +71,14 @@ export default function FixBar() {
         px={6}
         align="center"
         justify="space-between"
-        h="80px"
+        h="85px"
       >
         <Flex align="center" gap={3}>
           <Image
-            src="/images/Whisk_883bb3d159.png"
+            src="/images/logo-.png"
             alt="Logo"
-            width={100}
-            height={100}
+            width={60}
+            height={60}
           />
           
         </Flex>
@@ -118,7 +123,7 @@ export default function FixBar() {
             
           </Button>
           
-          {showSuggestions && filteredSuggestions.length > 0 && (
+          {mounted && showSuggestions && filteredSuggestions.length > 0 && (
             <Box
               position="absolute"
               top="100%"
@@ -151,7 +156,7 @@ export default function FixBar() {
         </Box>
         
         <Flex align="center" gap={4}>
-          <Button
+          {/* <Button
             variant="ghost"
             color="white"
             _hover={{ bg: "rgba(255, 255, 255, 0.1)" }}
@@ -159,7 +164,7 @@ export default function FixBar() {
             size="sm"
           >
             Configurações
-          </Button>
+          </Button> */}
           <Button
             variant="ghost"
             color="white"

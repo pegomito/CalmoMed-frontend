@@ -21,6 +21,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
     latitude: '',
     longitude: '',
     rating: '4.0',
+    contact: '',
   });
 
   const handleChange = (field, value) => {
@@ -38,13 +39,14 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
       latitude: '',
       longitude: '',
       rating: '4.0',
+      contact: '',
     });
     onClose();
   };
 
   const handleSubmit = async () => {
     // Validações
-    if (!formData.name || !formData.address || !formData.latitude || !formData.longitude) {
+    if (!formData.name || !formData.address || !formData.latitude || !formData.longitude || !formData.contact) {
       toaster.create({
         title: "Erro",
         description: "Por favor, preencha todos os campos obrigatórios.",
@@ -84,11 +86,16 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         latitude: lat.toString(),
         longitude: lng.toString(),
         rating: parseFloat(formData.rating) || 4.0,
+        contact: formData.contact,
       };
 
-      console.log('Criando posto:', postoData);
+      console.log('=== INICIANDO CRIAÇÃO DE POSTO ===');
+      console.log('Dados enviados:', postoData);
+      console.log('URL da API:', process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001');
 
-      await postosService.create(postoData);
+      const result = await postosService.create(postoData);
+      console.log('=== POSTO CRIADO COM SUCESSO ===');
+      console.log('Resposta:', result);
 
       toaster.create({
         title: "Sucesso!",
@@ -103,6 +110,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         latitude: '',
         longitude: '',
         rating: '4.0',
+        contact: '',
       });
 
       onClose();
@@ -112,10 +120,32 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         onSuccess();
       }
     } catch (error) {
-      console.error("Erro ao criar posto:", error);
+      console.error("=== ERRO AO CRIAR POSTO ===");
+      console.error("Erro completo:", error);
+      console.error("Tipo do erro:", typeof error);
+      console.error("Erro stringificado:", JSON.stringify(error, null, 2));
+      console.error("Detalhes do erro:", {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        config: error.config?.url,
+        code: error.code
+      });
+      
+      let errorMessage = "Erro ao criar posto de saúde.";
+      
+      if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED') {
+        errorMessage = "Não foi possível conectar ao servidor. Verifique se o backend está rodando em http://localhost:3001";
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toaster.create({
-        title: "Erro",
-        description: error.message || "Erro ao criar posto de saúde.",
+        title: "Erro ao criar posto",
+        description: errorMessage,
         type: "error",
       });
     } finally {
@@ -186,6 +216,8 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                 placeholder="Ex: UBS Centro"
                 bg="gray.700"
                 borderColor="gray.600"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
                 _hover={{ borderColor: "teal.500" }}
                 _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
               />
@@ -201,6 +233,25 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                 placeholder="Ex: Rua das Flores, 123 - Centro"
                 bg="gray.700"
                 borderColor="gray.600"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
+                _hover={{ borderColor: "teal.500" }}
+                _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
+              />
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
+                Telefone de Contato <Text as="span" color="red.400">*</Text>
+              </Text>
+              <Input
+                value={formData.contact}
+                onChange={(e) => handleChange('contact', e.target.value)}
+                placeholder="Ex: (49) 3321-1234"
+                bg="gray.700"
+                borderColor="gray.600"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
                 _hover={{ borderColor: "teal.500" }}
                 _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
               />
@@ -220,6 +271,8 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                     placeholder="Ex: -27.0945"
                     bg="gray.700"
                     borderColor="gray.600"
+                    color="white"
+                    _placeholder={{ color: "gray.400" }}
                     _hover={{ borderColor: "teal.500" }}
                     _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
                   />
@@ -238,6 +291,8 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                     placeholder="Ex: -52.6166"
                     bg="gray.700"
                     borderColor="gray.600"
+                    color="white"
+                    _placeholder={{ color: "gray.400" }}
                     _hover={{ borderColor: "teal.500" }}
                     _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
                   />
@@ -259,6 +314,8 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                 placeholder="Ex: 4.5"
                 bg="gray.700"
                 borderColor="gray.600"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
                 _hover={{ borderColor: "teal.500" }}
                 _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
               />
@@ -275,7 +332,14 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         {/* Footer */}
         <Box p={6} borderTop="1px solid" borderColor="gray.700">
           <HStack spacing={3} justify="flex-end">
-            <Button variant="outline" onClick={handleClose} disabled={loading}>
+            <Button 
+              variant="outline" 
+              onClick={handleClose} 
+              disabled={loading}
+              borderColor="gray.500"
+              color="white"
+              _hover={{ bg: "gray.700", borderColor: "gray.400" }}
+            >
               Cancelar
             </Button>
             <Button
