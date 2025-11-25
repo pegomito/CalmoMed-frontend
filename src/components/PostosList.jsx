@@ -3,7 +3,7 @@ import { VStack, Input, Text, Box, Grid, Badge, HStack } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
 import PostoCard from './PostoCard';
 
-export default function PostosList({ postos = [] }) {
+export default function PostosList({ postos = [], onUpdate }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterLotacao, setFilterLotacao] = useState('');
 
@@ -175,7 +175,7 @@ export default function PostosList({ postos = [] }) {
             pb={4}
           >
             {filteredPostos.map((posto) => (
-              <PostoCard key={posto.id} posto={posto} />
+              <PostoCard key={posto.id} posto={posto} onUpdate={onUpdate} />
             ))}
           </Grid>
         )}

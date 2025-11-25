@@ -11,7 +11,7 @@ import OccupancyStats from "@/components/OccupancyStats";
 import PostoCreate from "@/components/PostoCreate";
 import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
-import { toaster } from "@/components/ui/toaster";
+import { toaster, Toaster } from "@/components/ui/toaster";
 
 function LobbyContent() {
   const [sidebarSection, setSidebarSection] = useState("mapa");
@@ -67,10 +67,8 @@ function LobbyContent() {
         },
         address: posto.address,
         lotacao,
-        tempoEspera: "15-30min",
         filaAtual: posto.crowding_info?.reportedQueue || 0,
-        medicosDisponiveis: 2,
-        avaliacao: posto.rating || 4.0,
+        avaliacao: posto.rating || 0,
       };
     });
   }, [postos]);
@@ -132,18 +130,18 @@ function LobbyContent() {
                             Encontrados {postos.length} postos de saúde
                           </Text>
                         </VStack>
-                        <Button
+                        <Button 
                           colorScheme="teal"
                           size="lg"
                           onClick={() => setIsCreateModalOpen(true)}
                         >
-                          + Adicionar Posto
+                          + Adicionar Unidade
                         </Button>
                       </HStack>
                     </Box>
 
                     <Box flex="1" overflowY="auto">
-                      <PostosList postos={postos} />
+                      <PostosList postos={postos} onUpdate={fetchPostos} />
                     </Box>
                   </VStack>
                 )}
@@ -174,6 +172,7 @@ function LobbyContent() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={fetchPostos}
       />
+      <Toaster />
     </>
   );
 }

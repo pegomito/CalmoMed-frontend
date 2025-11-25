@@ -143,22 +143,8 @@ export default function GoogleMap({
                 ">
                   <div style="margin-bottom: 4px;"><strong>Endereço:</strong> ${marker.address || 'Não informado'}</div>
                   <div style="margin-bottom: 4px;"><strong>Lotação:</strong> ${marker.lotacao || 'baixa'}</div>
-                  <div style="margin-bottom: 4px;"><strong>Tempo de Espera:</strong> ${marker.tempoEspera || '15min'}</div>
-                  <div style="margin-bottom: 4px;"><strong>Fila:</strong> ${marker.filaAtual || '5'} pessoas</div>
-                  <div style="margin-bottom: 4px;"><strong>Médicos:</strong> ${marker.medicosDisponiveis || '2'}</div>
-                  <div style="margin-bottom: 8px;"><strong>Avaliação:</strong> ${marker.avaliacao || '4.2'}/5</div>
-                </div>
-                <div style="display: flex; gap: 6px;">
-                  <button onclick="tracarRota(${marker.position.lat}, ${marker.position.lng})" style="
-                    flex: 1;
-                    padding: 6px 10px;
-                    background: #2C7A7B;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    font-size: 10px;
-                    cursor: pointer;
-                  ">Traçar Rota</button>
+                  <div style="margin-bottom: 4px;"><strong>Fila Atual:</strong> ${marker.filaAtual || 0} pessoas</div>
+                  <div style="margin-bottom: 8px;"><strong>Avaliação:</strong> ${marker.avaliacao ? marker.avaliacao.toFixed(1) : 'N/A'}/5</div>
                 </div>
               ` : `
                 <div style="
@@ -167,7 +153,7 @@ export default function GoogleMap({
                   line-height: 1.3;
                 ">
                   <div>Lotação: ${marker.lotacao || 'baixa'}</div>
-                  <div>Espera: ${marker.tempoEspera || '15min'}</div>
+                  <div>Fila: ${marker.filaAtual || 0} pessoas</div>
                 </div>
               `}
             </div>
@@ -316,7 +302,7 @@ export default function GoogleMap({
             line-height: 1.3;
           ">
             <div>Lotação: ${marker.lotacao || 'baixa'}</div>
-            <div>Espera: ${marker.tempoEspera || '15min'}</div>
+            <div>Fila: ${marker.filaAtual || 0} pessoas</div>
           </div>
         </div>
         
@@ -438,10 +424,8 @@ export default function GoogleMap({
             ">
               <div style="margin-bottom: 4px;"><strong>Endereço:</strong> ${marker.address || 'Não informado'}</div>
               <div style="margin-bottom: 4px;"><strong>Lotação:</strong> ${marker.lotacao || 'baixa'}</div>
-              <div style="margin-bottom: 4px;"><strong>Tempo de Espera:</strong> ${marker.tempoEspera || '15min'}</div>
-              <div style="margin-bottom: 4px;"><strong>Fila:</strong> ${marker.filaAtual || '5'} pessoas</div>
-              <div style="margin-bottom: 4px;"><strong>Médicos:</strong> ${marker.medicosDisponiveis || '2'}</div>
-              <div style="margin-bottom: 8px;"><strong>Avaliação:</strong> ${marker.avaliacao || '4.2'}/5</div>
+              <div style="margin-bottom: 4px;"><strong>Fila Atual:</strong> ${marker.filaAtual || 0} pessoas</div>
+              <div style="margin-bottom: 8px;"><strong>Avaliação:</strong> ${marker.avaliacao ? marker.avaliacao.toFixed(1) : 'N/A'}/5</div>
             </div>
           ` : `
             <div style="
@@ -450,7 +434,7 @@ export default function GoogleMap({
               line-height: 1.3;
             ">
               <div>Lotação: ${marker.lotacao || 'baixa'}</div>
-              <div>Espera: ${marker.tempoEspera || '15min'}</div>
+              <div>Fila: ${marker.filaAtual || 0} pessoas</div>
             </div>
           `}
         </div>

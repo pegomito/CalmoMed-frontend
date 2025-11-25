@@ -1,27 +1,17 @@
 'use client';
-import { useState } from 'react';
-import {
-  Button,
-  VStack,
-  HStack,
-  Text,
-  Box,
-  Input,
-  Grid,
-  GridItem
-} from "@chakra-ui/react";
-
-import { postosService } from "@/services/api";
+import { useState, useEffect } from 'react';
+import { Button, VStack, HStack, Text, Box, Input } from "@chakra-ui/react";
 import { toaster, Toaster } from "@/components/ui/toaster";
+import { postosService } from "@/services/api";
+import * as OpenLocationCode from 'open-location-code';
 
-// Importar biblioteca Plus Code do Google
 let OpenLocationCodeClass;
 if (typeof window !== 'undefined') {
   const OLC = require('open-location-code');
   OpenLocationCodeClass = OLC.OpenLocationCode;
 }
 
-export default function PostoCreate({ isOpen, onClose, onSuccess }) {
+export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [loadingPlusCode, setLoadingPlusCode] = useState(false);
   const [formData, setFormData] = useState({
@@ -34,6 +24,44 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
     contact: '',
   });
 
+  // Preencher formulário quando posto mudar
+  useEffect(() => {
+    if (posto && isOpen) {
+      let contact = posto.contact || '';
+      
+      // Se contact for string que parece JSON, tentar fazer parse
+      if (typeof contact === 'string' && contact.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(contact);
+          contact = parsed.phone || parsed.contact || contact;
+        } catch (e) {
+          // Se falhar o parse, manter como está
+        }
+      }
+      
+      // Se contact for um objeto ou array, extrair valor string
+      if (typeof contact === 'object') {
+        if (Array.isArray(contact)) {
+          contact = contact[0] || '';
+        } else if (contact.phone) {
+          contact = contact.phone;
+        } else {
+          contact = '';
+        }
+      }
+      
+      setFormData({
+        name: posto.name || posto.nome || '',
+        address: posto.address || posto.endereco || '',
+        plusCode: '',
+        latitude: posto.latitude || '',
+        longitude: posto.longitude || '',
+        rating: posto.rating?.toString() || '4.0',
+        contact: contact,
+      });
+    }
+  }, [posto, isOpen]);
+
   const handleChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -41,44 +69,27 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
     }));
   };
 
-  const decodePlusCode = async (plusCode) => {
-    if (!plusCode.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        latitude: '',
-        longitude: ''
-      }));
-      return;
-    }
+  const decodePlusCode = async () => {
+    if (!formData.plusCode.trim()) return;
 
     try {
       setLoadingPlusCode(true);
       
-      // Extrair apenas o código (remover texto adicional se houver)
-      // Ex: "W9G5+CP Cristo Rei, Chapecó - SC" -> "W9G5+CP"
-      const codeMatch = plusCode.match(/[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}/i);
-      const cleanCode = codeMatch ? codeMatch[0].toUpperCase() : plusCode.trim().toUpperCase();
+      const codeMatch = formData.plusCode.match(/[23456789CFGHJMPQRVWX]{4,8}\+[23456789CFGHJMPQRVWX]{2,3}/i);
+      const cleanCode = codeMatch ? codeMatch[0].toUpperCase() : formData.plusCode.trim().toUpperCase();
 
-      // Criar instância do decodificador
       const olc = new OpenLocationCodeClass();
-
       let fullCode = cleanCode;
 
-      // Se for um código curto (6 ou 7 caracteres), expandir com localização de Chapecó
       if (olc.isShort(cleanCode)) {
-        // Chapecó, SC: -27.0945, -52.6166
         fullCode = olc.recoverNearest(cleanCode, -27.0945, -52.6166);
       }
 
-      // Validar se é um Plus Code válido
       if (!olc.isValid(fullCode) || !olc.isFull(fullCode)) {
         throw new Error('Plus Code inválido ou incompleto');
       }
 
-      // Decodificar usando a biblioteca oficial
       const codeArea = olc.decode(fullCode);
-      
-      // Pegar o centro da área
       const finalLat = codeArea.latitudeCenter;
       const finalLng = codeArea.longitudeCenter;
         
@@ -94,39 +105,17 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         type: "success",
       });
     } catch (error) {
-      console.error('Erro ao decodificar Plus Code:', error);
       toaster.create({
         title: "Erro",
-        description: error.message || "Não foi possível decodificar o Plus Code. Verifique o formato.",
+        description: error.message || "Não foi possível decodificar o Plus Code.",
         type: "error",
       });
-      
-      setFormData(prev => ({
-        ...prev,
-        latitude: '',
-        longitude: ''
-      }));
     } finally {
       setLoadingPlusCode(false);
     }
   };
 
-  const handleClose = () => {
-    // Limpar formulário ao fechar
-    setFormData({
-      name: '',
-      address: '',
-      plusCode: '',
-      latitude: '',
-      longitude: '',
-      rating: '4.0',
-      contact: '',
-    });
-    onClose();
-  };
-
   const handleSubmit = async () => {
-    // Validações
     if (!formData.name || !formData.address || !formData.contact) {
       toaster.create({
         title: "Erro",
@@ -136,41 +125,22 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
       return;
     }
 
-    if (!formData.plusCode) {
-      toaster.create({
-        title: "Erro",
-        description: "Por favor, insira o Plus Code da localização.",
-        type: "error",
-      });
-      return;
-    }
-
     if (!formData.latitude || !formData.longitude) {
       toaster.create({
         title: "Erro",
-        description: "Plus Code não foi decodificado. Clique em 'Buscar Coords'.",
+        description: "Coordenadas inválidas.",
         type: "error",
       });
       return;
     }
 
-    // Validar latitude e longitude
     const lat = parseFloat(formData.latitude);
     const lng = parseFloat(formData.longitude);
     
-    if (isNaN(lat) || isNaN(lng)) {
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
       toaster.create({
         title: "Erro",
-        description: "Latitude e longitude devem ser números válidos.",
-        type: "error",
-      });
-      return;
-    }
-
-    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-      toaster.create({
-        title: "Erro",
-        description: "Coordenadas inválidas. Latitude: -90 a 90, Longitude: -180 a 180.",
+        description: "Coordenadas inválidas.",
         type: "error",
       });
       return;
@@ -188,45 +158,19 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         contact: formData.contact,
       };
 
-      const result = await postosService.create(postoData);
+      await postosService.update(posto.id, postoData);
 
       toaster.create({
         title: "Sucesso!",
-        description: "Posto de saúde criado com sucesso.",
+        description: "Posto atualizado com sucesso.",
         type: "success",
       });
 
-      // Limpar formulário
-      setFormData({
-        name: '',
-        address: '',
-        plusCode: '',
-        latitude: '',
-        longitude: '',
-        rating: '4.0',
-        contact: '',
-      });
-
-      onClose();
-      
-      // Chamar callback de sucesso para atualizar lista
-      if (onSuccess) {
-        onSuccess();
-      }
+      if (onSuccess) onSuccess();
     } catch (error) {
-      let errorMessage = "Erro ao criar posto de saúde.";
-      
-      if (error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED') {
-        errorMessage = "Não foi possível conectar ao servidor. Verifique se o backend está rodando em http://localhost:3001";
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-      
       toaster.create({
-        title: "Erro ao criar posto",
-        description: errorMessage,
+        title: "Erro",
+        description: error.message || "Erro ao atualizar posto.",
         type: "error",
       });
     } finally {
@@ -238,7 +182,6 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
 
   return (
     <>
-      {/* Overlay de fundo */}
       <Box
         position="fixed"
         top="0"
@@ -247,10 +190,9 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         h="100vh"
         bg="rgba(0, 0, 0, 0.6)"
         zIndex="999"
-        onClick={handleClose}
+        onClick={onClose}
       />
 
-      {/* Modal */}
       <Box
         position="fixed"
         top="50%"
@@ -267,16 +209,15 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         overflowY="auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <Box p={6} borderBottom="1px solid" borderColor="gray.700">
           <HStack justify="space-between" align="center">
             <Text fontSize="xl" fontWeight="bold">
-              Adicionar Novo Posto de Saúde
+              Editar Posto de Saúde
             </Text>
             <Button
               size="sm"
               variant="ghost"
-              onClick={handleClose}
+              onClick={onClose}
               color="gray.400"
               _hover={{ color: "white", bg: "gray.700" }}
             >
@@ -285,7 +226,6 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
           </HStack>
         </Box>
 
-        {/* Body */}
         <Box p={6}>
           <VStack spacing={4} align="stretch">
             <Box>
@@ -341,13 +281,13 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
 
             <Box>
               <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
-                Plus Code (Google) <Text as="span" color="red.400">*</Text>
+                Plus Code (Google) - Opcional
               </Text>
               <HStack spacing={2}>
                 <Input
                   value={formData.plusCode}
                   onChange={(e) => handleChange('plusCode', e.target.value)}
-                  placeholder="Ex: W9G5+CP ou W9G5+CP Cristo Rei, Chapecó - SC"
+                  placeholder="Ex: W9G5+CP"
                   bg="gray.700"
                   borderColor="gray.600"
                   color="white"
@@ -358,8 +298,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                 <Button
                   colorScheme="teal"
                   size="md"
-                  onClick={() => decodePlusCode(formData.plusCode)}
-                  loading={loadingPlusCode}
+                  onClick={decodePlusCode}
                   disabled={loadingPlusCode || !formData.plusCode}
                   minW="140px"
                 >
@@ -371,7 +310,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
             {formData.latitude && formData.longitude && (
               <Box p={3} bg="green.900" borderRadius="md" borderLeft="4px solid" borderColor="green.500">
                 <Text fontSize="sm" color="green.200" fontWeight="medium">
-                  ✓ Coordenadas obtidas: {parseFloat(formData.latitude).toFixed(6)}, {parseFloat(formData.longitude).toFixed(6)}
+                  ✓ Coordenadas: {parseFloat(formData.latitude).toFixed(6)}, {parseFloat(formData.longitude).toFixed(6)}
                 </Text>
               </Box>
             )}
@@ -396,39 +335,15 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                 _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
               />
             </Box>
-
-            <Box p={3} bg="blue.900" borderRadius="md" borderLeft="4px solid" borderColor="blue.500">
-              <VStack align="start" spacing={1}>
-                <Text fontSize="sm" color="blue.200" fontWeight="medium">
-                  📍 Como obter o Plus Code:
-                </Text>
-                <Text fontSize="xs" color="blue.300">
-                  1. Abra o Google Maps e localize o posto de saúde
-                </Text>
-                <Text fontSize="xs" color="blue.300">
-                  2. Clique no local com o botão direito
-                </Text>
-                <Text fontSize="xs" color="blue.300">
-                  3. O Plus Code aparecerá nas informações (ex: W9G5+CP)
-                </Text>
-                <Text fontSize="xs" color="blue.300">
-                  4. Cole aqui e clique em "Buscar Coords"
-                </Text>
-              </VStack>
-            </Box>
           </VStack>
         </Box>
 
-        {/* Footer */}
         <Box p={6} borderTop="1px solid" borderColor="gray.700" position="relative" zIndex="1002">
           <HStack spacing={3} justify="flex-end">
             <Button 
               type="button"
               variant="outline" 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClose();
-              }}
+              onClick={onClose}
               borderColor="gray.500"
               color="white"
               cursor="pointer"
@@ -439,15 +354,13 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
             <Button
               type="button"
               colorScheme="teal"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleSubmit();
-              }}
+              onClick={handleSubmit}
+              disabled={loading}
               cursor="pointer"
               bg="teal.500"
               _hover={{ bg: "teal.600" }}
             >
-              {loading ? 'Criando...' : 'Adicionar'}
+              {loading ? 'Salvando...' : 'Salvar Alterações'}
             </Button>
           </HStack>
         </Box>

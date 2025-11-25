@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
-import { Toaster } from "@/components/ui/toaster";
 
 export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
@@ -124,7 +123,6 @@ export default function LoginPage() {
           </VStack>
         </Box>
       </Box>
-      <Toaster />
     </Box>
   );
 }
