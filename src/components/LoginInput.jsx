@@ -197,6 +197,7 @@ export default function LoginInput({ onLogin }) {
           name="email"
           placeholder="E-mail"
           onChange={applyChange}
+          onKeyPress={(e) => e.key === 'Enter' && applyLogin()}
           borderColor="white"
           color="white"
           _placeholder={{ color: "white" }}
@@ -206,6 +207,7 @@ export default function LoginInput({ onLogin }) {
           type="password"
           placeholder="Senha"
           onChange={applyChange}
+          onKeyPress={(e) => e.key === 'Enter' && applyLogin()}
           borderColor="white"
           color="white"
           _placeholder={{ color: "white" }}

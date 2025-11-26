@@ -5,10 +5,10 @@ import { useSearchParams } from "next/navigation";
 import FixBar from "@/components/FixBar";
 import Sidebar from "@/components/Sidebar";
 import GoogleMap from "@/components/GoogleMap";
-import NotificationCenter from "@/components/NotificationCenter";
 import PostosList from "@/components/PostosList";
 import OccupancyStats from "@/components/OccupancyStats";
 import PostoCreate from "@/components/PostoCreate";
+import UserProfile from "@/components/UserProfile";
 import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster, Toaster } from "@/components/ui/toaster";
@@ -131,13 +131,13 @@ function LobbyContent() {
                           </Text>
                         </VStack>
                         <Button 
-                          colorScheme="teal"
+                          colorPalette="teal" variant="solid"
                           size="lg"
                           onClick={() => setIsCreateModalOpen(true)}
                         >
                           + Adicionar Unidade
-                        </Button>
-                      </HStack>
+                        </Button>     
+                      </HStack> 
                     </Box>
 
                     <Box flex="1" overflowY="auto">
@@ -146,22 +146,12 @@ function LobbyContent() {
                   </VStack>
                 )}
 
-                {sidebarSection === "notificacoes" && (
-                  <VStack spacing={4} align="stretch" h="100%">
-                    <Box>
-                      <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
-                        Central de Notificações
-                      </Text>
-                      <Text color="gray.300" fontSize="lg">
-                        Gerencie suas notificações e alertas.
-                      </Text>
-                    </Box>
-
-                    <Box flex="1" overflowY="auto">
-                      <NotificationCenter />
-                    </Box>
-                  </VStack>
+                {sidebarSection === "perfil" && (
+                  <Box h="100%" overflowY="auto">
+                    <UserProfile />
+                  </Box>
                 )}
+                
               </>
             )}
           </Box>

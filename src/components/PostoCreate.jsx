@@ -30,14 +30,53 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
     plusCode: '',
     latitude: '',
     longitude: '',
-    rating: '4.0',
     contact: '',
+    services: [],
+    specialties: [],
+    opening_hours: '',
   });
+
+  const [newService, setNewService] = useState('');
+  const [newSpecialty, setNewSpecialty] = useState('');
 
   const handleChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
+    }));
+  };
+
+  const addService = () => {
+    if (newService.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        services: [...prev.services, newService.trim()]
+      }));
+      setNewService('');
+    }
+  };
+
+  const removeService = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      services: prev.services.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addSpecialty = () => {
+    if (newSpecialty.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        specialties: [...prev.specialties, newSpecialty.trim()]
+      }));
+      setNewSpecialty('');
+    }
+  };
+
+  const removeSpecialty = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      specialties: prev.specialties.filter((_, i) => i !== index)
     }));
   };
 
@@ -119,9 +158,13 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
       plusCode: '',
       latitude: '',
       longitude: '',
-      rating: '4.0',
       contact: '',
+      services: [],
+      specialties: [],
+      opening_hours: '',
     });
+    setNewService('');
+    setNewSpecialty('');
     onClose();
   };
 
@@ -184,8 +227,10 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         address: formData.address,
         latitude: lat.toString(),
         longitude: lng.toString(),
-        rating: parseFloat(formData.rating) || 4.0,
         contact: formData.contact,
+        services: formData.services,
+        specialties: formData.specialties,
+        opening_hours: formData.opening_hours.trim() || null,
       };
 
       const result = await postosService.create(postoData);
@@ -203,9 +248,13 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         plusCode: '',
         latitude: '',
         longitude: '',
-        rating: '4.0',
         contact: '',
+        services: [],
+        specialties: [],
+        opening_hours: '',
       });
+      setNewService('');
+      setNewSpecialty('');
 
       onClose();
       
@@ -376,27 +425,6 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
               </Box>
             )}
 
-            <Box>
-              <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
-                Avaliação (0-5)
-              </Text>
-              <Input
-                type="number"
-                step="0.1"
-                min="0"
-                max="5"
-                value={formData.rating}
-                onChange={(e) => handleChange('rating', e.target.value)}
-                placeholder="Ex: 4.5"
-                bg="gray.700"
-                borderColor="gray.600"
-                color="white"
-                _placeholder={{ color: "gray.400" }}
-                _hover={{ borderColor: "teal.500" }}
-                _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
-              />
-            </Box>
-
             <Box p={3} bg="blue.900" borderRadius="md" borderLeft="4px solid" borderColor="blue.500">
               <VStack align="start" spacing={1}>
                 <Text fontSize="sm" color="blue.200" fontWeight="medium">
@@ -415,6 +443,115 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                   4. Cole aqui e clique em "Buscar Coords"
                 </Text>
               </VStack>
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
+                Serviços Disponíveis
+              </Text>
+              <HStack spacing={2} mb={2}>
+                <Input
+                  value={newService}
+                  onChange={(e) => setNewService(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addService()}
+                  placeholder="Ex: Clínico Geral, Pediatria..."
+                  bg="gray.700"
+                  borderColor="gray.600"
+                  color="white"
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ borderColor: "teal.500" }}
+                  _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
+                />
+                <Button
+                  colorScheme="teal"
+                  size="md"
+                  onClick={addService}
+                  minW="100px"
+                >
+                  Adicionar
+                </Button>
+              </HStack>
+              {formData.services.length > 0 && (
+                <VStack align="stretch" spacing={2}>
+                  {formData.services.map((service, index) => (
+                    <HStack key={index} p={2} bg="gray.700" borderRadius="md">
+                      <Text flex="1" fontSize="sm" color="white">• {service}</Text>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        color="red.400"
+                        onClick={() => removeService(index)}
+                        _hover={{ bg: "red.900" }}
+                      >
+                        ✕
+                      </Button>
+                    </HStack>
+                  ))}
+                </VStack>
+              )}
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
+                Especialidades Médicas
+              </Text>
+              <HStack spacing={2} mb={2}>
+                <Input
+                  value={newSpecialty}
+                  onChange={(e) => setNewSpecialty(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && addSpecialty()}
+                  placeholder="Ex: Cardiologia, Dermatologia..."
+                  bg="gray.700"
+                  borderColor="gray.600"
+                  color="white"
+                  _placeholder={{ color: "gray.400" }}
+                  _hover={{ borderColor: "teal.500" }}
+                  _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
+                />
+                <Button
+                  colorScheme="teal"
+                  size="md"
+                  onClick={addSpecialty}
+                  minW="100px"
+                >
+                  Adicionar
+                </Button>
+              </HStack>
+              {formData.specialties.length > 0 && (
+                <VStack align="stretch" spacing={2}>
+                  {formData.specialties.map((specialty, index) => (
+                    <HStack key={index} p={2} bg="gray.700" borderRadius="md">
+                      <Text flex="1" fontSize="sm" color="white">• {specialty}</Text>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        color="red.400"
+                        onClick={() => removeSpecialty(index)}
+                        _hover={{ bg: "red.900" }}
+                      >
+                        ✕
+                      </Button>
+                    </HStack>
+                  ))}
+                </VStack>
+              )}
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
+                Horário de Funcionamento
+              </Text>
+              <Input
+                value={formData.opening_hours}
+                onChange={(e) => handleChange('opening_hours', e.target.value)}
+                placeholder="Ex: Segunda a Sexta: 7h-17h, Sábado: 7h-12h"
+                bg="gray.700"
+                borderColor="gray.600"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
+                _hover={{ borderColor: "teal.500" }}
+                _focus={{ borderColor: "teal.500", boxShadow: "0 0 0 1px var(--chakra-colors-teal-500)" }}
+              />
             </Box>
           </VStack>
         </Box>

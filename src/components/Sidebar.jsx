@@ -1,7 +1,7 @@
 'use client';
 import { Box, VStack, Text, Flex } from "@chakra-ui/react";
 import { useState } from "react";
-import { FaMapMarkedAlt, FaHospital } from "react-icons/fa";
+import { FaMapMarkedAlt, FaHospital, FaUser } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 
 export default function Sidebar({ activeSection, onSectionChange }) {
@@ -19,9 +19,9 @@ export default function Sidebar({ activeSection, onSectionChange }) {
       icon: FaHospital,
     },
     {
-      id: "notificacoes",
-      label: "Notificações",
-      icon: IoIosNotifications,
+      id: "perfil",
+      label: "Meu Perfil",
+      icon: FaUser,
     },
   ];
 

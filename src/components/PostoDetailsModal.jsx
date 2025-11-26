@@ -9,11 +9,9 @@ import {
   Grid,
   GridItem
 } from "@chakra-ui/react";
-import { useState } from "react";
-import ReportOccupancyModal from "./ReportOccupancyModal";
+import { toaster, Toaster } from "@/components/ui/toaster";
 
 export default function PostoDetailsModal({ isOpen, onClose, posto }) {
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   if (!posto) return null;
 
@@ -60,17 +58,17 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
         w="90%"
         maxW="600px"
         maxH="90vh"
-        bg="white"
+        bg="gray.800"
         borderRadius="xl"
         boxShadow="2xl"
         zIndex="1001"
         overflow="hidden"
       >
-        <Box p={6} borderBottom="1px solid" borderColor="gray.200">
+        <Box p={6} borderBottom="1px solid" borderColor="gray.700">
           <VStack align="stretch" spacing={2}>
             <HStack justify="space-between" align="flex-start">
-              <Text fontSize="xl" fontWeight="bold">
-                {posto.nome}
+              <Text fontSize="xl" fontWeight="bold" color="white">
+                {posto.name || posto.nome}
               </Text>
               <HStack spacing={2}>
                 <Badge 
@@ -86,51 +84,59 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                   size="sm"
                   variant="ghost"
                   onClick={onClose}
-                  color="gray.600"
-                  _hover={{ bg: "gray.100" }}
+                  color="gray.400"
+                  _hover={{ bg: "gray.700", color: "white" }}
                 >
-                  X
+                  ✕
                 </Button>
               </HStack>
             </HStack>
-            <Text fontSize="md" color="gray.600">
-              {posto.tipo}
-            </Text>
           </VStack>
         </Box>
 
         <Box p={6} overflowY="auto" maxH="60vh">
           <VStack spacing={6} align="stretch">
             <Box>
-              <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
+              <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
                 Endereço
               </Text>
-              <Text fontSize="md" color="gray.600">
-                {posto.endereco}
+              <Text fontSize="md" color="gray.400">
+                {posto.address || posto.endereco}
+              </Text>
+            </Box>
+
+            <Box>
+              <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
+                Contato
+              </Text>
+              <Text fontSize="md" color="gray.400">
+                {typeof posto.contact === 'string' && posto.contact.startsWith('{') 
+                  ? JSON.parse(posto.contact).phone 
+                  : posto.contact}
               </Text>
             </Box>
 
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Pessoas na Fila</Text>
-                  <Text fontSize="2xl" color="blue.600" fontWeight="bold">
+                <Box bg="gray.700" p={3} borderRadius="md">
+                  <Text fontSize="sm" color="gray.400" mb={1}>Pessoas na Fila</Text>
+                  <Text fontSize="2xl" color="blue.400" fontWeight="bold">
                     {posto.crowding_info?.reportedQueue || 0}
                   </Text>
                 </Box>
               </GridItem>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Taxa de Ocupação</Text>
-                  <Text fontSize="2xl" color="orange.600" fontWeight="bold">
+                <Box bg="gray.700" p={3} borderRadius="md">
+                  <Text fontSize="sm" color="gray.400" mb={1}>Taxa de Ocupação</Text>
+                  <Text fontSize="2xl" color="orange.400" fontWeight="bold">
                     {posto.crowding_info?.occupancyPercentage || 0}%
                   </Text>
                 </Box>
               </GridItem>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Última Atualização</Text>
-                  <Text fontSize="lg" color="purple.600" fontWeight="bold">
+                <Box bg="gray.700" p={3} borderRadius="md">
+                  <Text fontSize="sm" color="gray.400" mb={1}>Última Atualização</Text>
+                  <Text fontSize="sm" color="purple.400" fontWeight="bold">
                     {posto.crowding_info?.lastUpdate 
                       ? new Date(posto.crowding_info.lastUpdate).toLocaleString('pt-BR', {
                           day: '2-digit',
@@ -143,25 +149,23 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                 </Box>
               </GridItem>
               <GridItem>
-                <Box>
-                  <Text fontSize="sm" color="gray.500" mb={1}>Distância Média</Text>
-                  <Text fontSize="lg" color="green.600" fontWeight="bold">
-                    {posto.crowding_info?.distance_to_posto 
-                      ? `${Math.round(posto.crowding_info.distance_to_posto)}m`
-                      : 'N/A'}
+                <Box bg="gray.700" p={3} borderRadius="md">
+                  <Text fontSize="sm" color="gray.400" mb={1}>Avaliação</Text>
+                  <Text fontSize="2xl" color="yellow.400" fontWeight="bold">
+                    {posto.rating ? posto.rating.toFixed(1) : 'N/A'} 
                   </Text>
                 </Box>
               </GridItem>
             </Grid>
 
             {posto.specialties && Array.isArray(posto.specialties) && posto.specialties.length > 0 && (
-              <Box>
-                <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
+              <Box bg="gray.700" p={4} borderRadius="md">
+                <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
                   Especialidades Disponíveis
                 </Text>
                 <VStack align="stretch" spacing={1}>
                   {posto.specialties.map((spec, index) => (
-                    <Text key={index} fontSize="sm" color="gray.600">
+                    <Text key={index} fontSize="sm" color="gray.400">
                       • {spec}
                     </Text>
                   ))}
@@ -170,13 +174,13 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
             )}
 
             {posto.services && Array.isArray(posto.services) && posto.services.length > 0 && (
-              <Box>
-                <Text fontSize="sm" fontWeight="semibold" color="gray.700" mb={2}>
+              <Box bg="gray.700" p={4} borderRadius="md">
+                <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
                   Serviços Disponíveis
                 </Text>
                 <VStack align="stretch" spacing={1}>
                   {posto.services.map((servico, index) => (
-                    <Text key={index} fontSize="sm" color="gray.600">
+                    <Text key={index} fontSize="sm" color="gray.400">
                       • {servico}
                     </Text>
                   ))}
@@ -184,43 +188,27 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
               </Box>
             )}
 
-            <Box 
-              bg="blue.50" 
-              p={4} 
-              borderRadius="md"
-              border="1px solid"
-              borderColor="blue.200"
-            >
-              <Text fontSize="sm" fontWeight="semibold" color="blue.800" mb={2}>
-                Como Reportar Ocupação:
-              </Text>
-              <Text fontSize="sm" color="blue.700">
-                Ajude a comunidade! Clique em "Reportar Ocupação" para informar quantas pessoas você vê na fila ou sala de espera. Seus dados ajudam outros usuários a planejar melhor suas visitas.
-              </Text>
-            </Box>
+            {posto.opening_hours && (
+              <Box bg="gray.700" p={4} borderRadius="md">
+                <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
+                  Horário de Funcionamento
+                </Text>
+                <Text fontSize="sm" color="gray.400">
+                  {posto.opening_hours}
+                </Text>
+              </Box>
+            )}
           </VStack>
         </Box>
 
-        <Box p={6} borderTop="1px solid" borderColor="gray.200">
-          <HStack justify="space-between">
-            <Button 
-              onClick={() => setIsReportModalOpen(true)} 
-              colorScheme="teal"
-            >
-              Reportar Ocupação
-            </Button>
-            <Button onClick={onClose} colorScheme="gray">
+        <Box p={6} borderTop="1px solid" borderColor="gray.700">
+          <HStack justify="flex-end">
+            <Button onClick={onClose} colorScheme="teal">
               Fechar
             </Button>
           </HStack>
         </Box>
       </Box>
-
-      <ReportOccupancyModal
-        isOpen={isReportModalOpen}
-        onClose={() => setIsReportModalOpen(false)}
-        posto={posto}
-      />
     </>
   );
 }
