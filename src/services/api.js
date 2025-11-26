@@ -167,37 +167,4 @@ export const postosService = {
   }
 };
 
-// Serviço de Relatórios de Ocupação
-export const occupancyService = {
-  // Criar relatório de ocupação
-  async create(reportData) {
-    try {
-      const response = await axios.post('/api/occupancy-reports', reportData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Erro ao criar relatório' };
-    }
-  },
-
-  // Listar relatórios
-  async getAll() {
-    try {
-      const response = await axios.get('/api/occupancy-reports');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Erro ao buscar relatórios' };
-    }
-  },
-
-  // Buscar relatórios por posto
-  async getByPosto(postoId) {
-    try {
-      const response = await axios.get(`/api/occupancy-reports/posto/${postoId}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || { message: 'Erro ao buscar relatórios do posto' };
-    }
-  }
-};
-
 export default axios;

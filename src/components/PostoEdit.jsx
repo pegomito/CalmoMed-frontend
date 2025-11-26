@@ -205,7 +205,7 @@ export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
 
       toaster.create({
         title: "Sucesso!",
-        description: "Posto atualizado com sucesso.",
+        description: "Unidade atualizada com sucesso.",
         type: "success",
       });
 
@@ -213,7 +213,7 @@ export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
     } catch (error) {
       toaster.create({
         title: "Erro",
-        description: error.message || "Erro ao atualizar posto.",
+        description: error.message || "Erro ao atualizar unidade.",
         type: "error",
       });
     } finally {
@@ -255,7 +255,7 @@ export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
         <Box p={6} borderBottom="1px solid" borderColor="gray.700">
           <HStack justify="space-between" align="center">
             <Text fontSize="xl" fontWeight="bold">
-              Editar Posto de Saúde
+              Editar Unidade de Saúde
             </Text>
             <Button
               size="sm"
@@ -273,7 +273,7 @@ export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
           <VStack spacing={4} align="stretch">
             <Box>
               <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
-                Nome do Posto <Text as="span" color="red.400">*</Text>
+                Nome da Unidade <Text as="span" color="red.400">*</Text>
               </Text>
               <Input
                 value={formData.name}

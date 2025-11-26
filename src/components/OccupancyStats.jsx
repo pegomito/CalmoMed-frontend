@@ -49,17 +49,17 @@ export default function OccupancyStats({ postos }) {
 
       <GridItem>
         <Box
-          bg="rgba(34, 197, 94, 0.1)"
+          bg="rgba(59, 130, 246, 0.1)"
           borderRadius="lg"
           p={4}
           border="1px solid"
-          borderColor="green.500"
+          borderColor="blue.500"
         >
           <VStack align="start" spacing={1}>
-            <Text fontSize="sm" color="green.300">
+            <Text fontSize="sm" color="blue.300">
               Com Dados Recentes
             </Text>
-            <Text fontSize="3xl" fontWeight="bold" color="green.400">
+            <Text fontSize="3xl" fontWeight="bold" color="blue.400">
               {stats.withReports}
             </Text>
           </VStack>
@@ -68,17 +68,17 @@ export default function OccupancyStats({ postos }) {
 
       <GridItem>
         <Box
-          bg="rgba(234, 179, 8, 0.1)"
+          bg="rgba(59, 130, 246, 0.1)"
           borderRadius="lg"
           p={4}
           border="1px solid"
-          borderColor="yellow.500"
+          borderColor="blue.500"
         >
           <VStack align="start" spacing={1}>
-            <Text fontSize="sm" color="yellow.300">
+            <Text fontSize="sm" color="blue.300">
               Ocupação Média
             </Text>
-            <Text fontSize="3xl" fontWeight="bold" color="yellow.400">
+            <Text fontSize="3xl" fontWeight="bold" color="blue.400">
               {stats.avgOccupancy}%
             </Text>
           </VStack>
@@ -87,17 +87,17 @@ export default function OccupancyStats({ postos }) {
 
       <GridItem>
         <Box
-          bg="rgba(168, 85, 247, 0.1)"
+          bg="rgba(59, 130, 246, 0.1)"
           borderRadius="lg"
           p={4}
           border="1px solid"
-          borderColor="purple.500"
+          borderColor="blue.500"
         >
           <VStack align="start" spacing={1}>
-            <Text fontSize="sm" color="purple.300">
+            <Text fontSize="sm" color="blue.300">
               Pessoas em Filas
             </Text>
-            <Text fontSize="3xl" fontWeight="bold" color="purple.400">
+            <Text fontSize="3xl" fontWeight="bold" color="blue.400">
               {stats.totalPeople}
             </Text>
           </VStack>

@@ -264,7 +264,7 @@ export default function UserProfile() {
               mt={2}
             >
               <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
-                Postos Favoritos
+                Unidades Favoritas
               </Text>
               <Text fontSize="2xl" color="yellow.400" fontWeight="bold">
                 {user.favorite_postos.length}
