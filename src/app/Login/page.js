@@ -5,6 +5,8 @@ import React, { useState, Suspense } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
 
+export const dynamic = 'force-dynamic';
+
 function LoginContent() {
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
