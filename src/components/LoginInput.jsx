@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   Input,
   Button,
@@ -21,22 +20,24 @@ export default function LoginInput({ onLogin }) {
   const [newPassword, setNewPassword] = useState("");
   const [isResetMode, setIsResetMode] = useState(false);
   const { login } = useAuth();
-  const searchParams = useSearchParams();
 
   // Verificar se há um token de reset na URL
   useEffect(() => {
-    const tokenFromUrl = searchParams?.get('reset');
-    if (tokenFromUrl) {
-      setResetToken(tokenFromUrl);
-      setIsResetMode(true);
-      setDialogOpen(true);
-      toaster.create({
-        title: "Link de recuperação detectado",
-        description: "Digite sua nova senha para completar a recuperação.",
-        type: "info",
-      });
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenFromUrl = urlParams.get('reset');
+      if (tokenFromUrl) {
+        setResetToken(tokenFromUrl);
+        setIsResetMode(true);
+        setDialogOpen(true);
+        toaster.create({
+          title: "Link de recuperação detectado",
+          description: "Digite sua nova senha para completar a recuperação.",
+          type: "info",
+        });
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   const applyChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
