@@ -1,7 +1,7 @@
 'use client';
 import { Box, VStack, Heading, Text, Button, Image } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
 
@@ -110,7 +110,9 @@ export default function LoginPage() {
                 </Button>
               </>
             ) : (
-              <LoginInput onLogin={registerLogin} />
+              <Suspense fallback={<Text color="white">Carregando...</Text>}>
+                <LoginInput onLogin={registerLogin} />
+              </Suspense>
             )}
             <Button
               mt={4}
