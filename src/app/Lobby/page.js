@@ -1,6 +1,6 @@
 'use client';
 import { Box, VStack, HStack, Heading, Button, Text, Spinner } from "@chakra-ui/react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import FixBar from "@/components/FixBar";
 import Sidebar from "@/components/Sidebar";
@@ -27,7 +27,7 @@ function LobbyContent() {
   }, []);
 
   useEffect(() => {
-    const tabParam = searchParams.get("tab");
+    const tabParam = searchParams?.get("tab");
     if (tabParam) {
       setSidebarSection(tabParam);
     }
@@ -177,7 +177,13 @@ function LobbyContent() {
 export default function LobbyPage() {
   return (
     <SearchProvider>
-      <LobbyContent />
+      <Suspense fallback={
+        <Box w="100%" h="100vh" bg="rgba(30, 48, 63, 1)" display="flex" alignItems="center" justifyContent="center">
+          <Spinner size="xl" color="teal.500" />
+        </Box>
+      }>
+        <LobbyContent />
+      </Suspense>
     </SearchProvider>
   );
 }
