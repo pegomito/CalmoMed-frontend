@@ -18,8 +18,13 @@ function LobbyContent() {
   const [postos, setPostos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const { setPostos: setSearchPostos } = useSearch();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const tabParam = searchParams.get("tab");
@@ -75,11 +80,13 @@ function LobbyContent() {
 
   return (
     <>
-      <FixBar />
-      <Sidebar 
-        activeSection={sidebarSection} 
-        onSectionChange={setSidebarSection}
-      />
+      {mounted && <FixBar />}
+      {mounted && (
+        <Sidebar 
+          activeSection={sidebarSection} 
+          onSectionChange={setSidebarSection}
+        />
+      )}
 
       <Box
         w="100%"
