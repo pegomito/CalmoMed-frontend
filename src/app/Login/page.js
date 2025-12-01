@@ -5,7 +5,7 @@ import React, { useState, Suspense } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
 
-export default function LoginPage() {
+function LoginContent() {
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
 
@@ -110,9 +110,7 @@ export default function LoginPage() {
                 </Button>
               </>
             ) : (
-              <Suspense fallback={<Text color="white">Carregando...</Text>}>
-                <LoginInput onLogin={registerLogin} />
-              </Suspense>
+              <LoginInput onLogin={registerLogin} />
             )}
             <Button
               mt={4}
@@ -126,5 +124,17 @@ export default function LoginPage() {
         </Box>
       </Box>
     </Box>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <Box w="100%" h="100vh" bg="linear-gradient(135deg, #38B2AC 0%, #1A365D 100%)" display="flex" alignItems="center" justifyContent="center">
+        <Text color="white" fontSize="xl">Carregando...</Text>
+      </Box>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }
