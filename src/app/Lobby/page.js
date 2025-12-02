@@ -13,6 +13,8 @@ import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster, Toaster } from "@/components/ui/toaster";
 
+export const dynamic = 'force-dynamic';
+
 function LobbyContent() {
   const [sidebarSection, setSidebarSection] = useState("mapa");
   const [postos, setPostos] = useState([]);
