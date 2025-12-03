@@ -2,24 +2,32 @@
 import { VStack, Input, Text, Box, Grid, Badge, HStack } from '@chakra-ui/react';
 import { useState, useMemo } from 'react';
 import PostoCard from './PostoCard';
+import { calcularDecaimentoLocal } from '@/utils/ocupacaoDecaimento';
 
 export default function PostosList({ postos = [], onUpdate }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterLotacao, setFilterLotacao] = useState('');
 
-  // Calcular lotação baseado em crowding_info
+  // Calcular lotação baseado em crowding_info COM DECAIMENTO APLICADO
   const getPostoWithLotacao = (posto) => {
-    const occupancy = posto.crowding_info?.occupancyPercentage || 0;
+    // Aplicar decaimento automático baseado no tempo
+    const postoComDecaimento = calcularDecaimentoLocal(posto);
+    
+    // Usar o número de pessoas na fila APÓS decaimento
+    const filaAtual = postoComDecaimento.crowding_info?.reportedQueue || 0;
     let lotacao = 'baixa';
     
-    if (occupancy >= 90) lotacao = 'crítica';
-    else if (occupancy >= 70) lotacao = 'alta';
-    else if (occupancy >= 40) lotacao = 'média';
+    // Determinar lotação baseado no número de pessoas (não percentual)
+    if (filaAtual > 15) {
+      lotacao = 'alta';
+    } else if (filaAtual > 5) {
+      lotacao = 'média';
+    }
     
     return {
-      ...posto,
-      nome: posto.name,
-      endereco: posto.address,
+      ...postoComDecaimento,
+      nome: postoComDecaimento.name,
+      endereco: postoComDecaimento.address,
       lotacao,
       tipo: 'UBS'
     };
