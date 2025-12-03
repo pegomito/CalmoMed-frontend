@@ -27,6 +27,8 @@ export default function GoogleMap({
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+    
     const style = document.createElement('style');
     style.textContent = `
       .gm-style div,
@@ -44,8 +46,10 @@ export default function GoogleMap({
     document.head.appendChild(style);
 
     const initMap = async () => {
+      // Esperar DOM estar pronto
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       if (!mapRef.current) {
-        console.error('mapRef.current is null');
         return;
       }
 
@@ -221,7 +225,7 @@ export default function GoogleMap({
         }
       });
     };
-  }, []);
+  }, [mounted]);
 
   // Atualizar contexto quando o mapa for criado (useEffect separado para evitar loop)
   useEffect(() => {

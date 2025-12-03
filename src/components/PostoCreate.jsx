@@ -237,7 +237,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
 
       toaster.create({
         title: "Sucesso!",
-        description: "Posto de saúde criado com sucesso.",
+        description: "Unidade de saúde criada com sucesso.",
         type: "success",
       });
 
@@ -274,7 +274,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
       }
       
       toaster.create({
-        title: "Erro ao criar posto",
+        title: "Erro ao criar unidade",
         description: errorMessage,
         type: "error",
       });
@@ -320,7 +320,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
         <Box p={6} borderBottom="1px solid" borderColor="gray.700">
           <HStack justify="space-between" align="center">
             <Text fontSize="xl" fontWeight="bold">
-              Adicionar Novo Posto de Saúde
+              Adicionar Nova Unidade de Saúde
             </Text>
             <Button
               size="sm"
@@ -339,7 +339,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
           <VStack spacing={4} align="stretch">
             <Box>
               <Text fontSize="sm" fontWeight="medium" mb={2} color="gray.300">
-                Nome do Posto <Text as="span" color="red.400">*</Text>
+                Nome da Unidade <Text as="span" color="red.400">*</Text>
               </Text>
               <Input
                 value={formData.name}
@@ -431,7 +431,7 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
                   📍 Como obter o Plus Code:
                 </Text>
                 <Text fontSize="xs" color="blue.300">
-                  1. Abra o Google Maps e localize o posto de saúde
+                  1. Abra o Google Maps e localize a unidade de saúde
                 </Text>
                 <Text fontSize="xs" color="blue.300">
                   2. Clique no local com o botão direito
@@ -473,20 +473,23 @@ export default function PostoCreate({ isOpen, onClose, onSuccess }) {
               </HStack>
               {formData.services.length > 0 && (
                 <VStack align="stretch" spacing={2}>
-                  {formData.services.map((service, index) => (
-                    <HStack key={index} p={2} bg="gray.700" borderRadius="md">
-                      <Text flex="1" fontSize="sm" color="white">• {service}</Text>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        color="red.400"
-                        onClick={() => removeService(index)}
-                        _hover={{ bg: "red.900" }}
-                      >
-                        ✕
-                      </Button>
-                    </HStack>
-                  ))}
+                  {formData.services.map((service, index) => {
+                    const serviceText = typeof service === 'object' ? service.type : service;
+                    return (
+                      <HStack key={index} p={2} bg="gray.700" borderRadius="md">
+                        <Text flex="1" fontSize="sm" color="white">• {serviceText}</Text>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          color="red.400"
+                          onClick={() => removeService(index)}
+                          _hover={{ bg: "red.900" }}
+                        >
+                          ✕
+                        </Button>
+                      </HStack>
+                    );
+                  })}
                 </VStack>
               )}
             </Box>

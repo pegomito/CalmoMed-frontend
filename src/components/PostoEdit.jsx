@@ -386,20 +386,23 @@ export default function PostoEdit({ isOpen, onClose, posto, onSuccess }) {
               </HStack>
               {formData.services.length > 0 && (
                 <VStack align="stretch" spacing={2}>
-                  {formData.services.map((service, index) => (
-                    <HStack key={index} p={2} bg="gray.700" borderRadius="md">
-                      <Text flex="1" fontSize="sm" color="white">• {service}</Text>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        color="red.400"
-                        onClick={() => removeService(index)}
-                        _hover={{ bg: "red.900" }}
-                      >
-                        ✕
-                      </Button>
-                    </HStack>
-                  ))}
+                  {formData.services.map((service, index) => {
+                    const serviceText = typeof service === 'object' ? service.type : service;
+                    return (
+                      <HStack key={index} p={2} bg="gray.700" borderRadius="md">
+                        <Text flex="1" fontSize="sm" color="white">• {serviceText}</Text>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          color="red.400"
+                          onClick={() => removeService(index)}
+                          _hover={{ bg: "red.900" }}
+                        >
+                          ✕
+                        </Button>
+                      </HStack>
+                    );
+                  })}
                 </VStack>
               )}
             </Box>

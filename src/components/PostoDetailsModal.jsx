@@ -179,11 +179,15 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                   Serviços Disponíveis
                 </Text>
                 <VStack align="stretch" spacing={1}>
-                  {posto.services.map((servico, index) => (
-                    <Text key={index} fontSize="sm" color="gray.400">
-                      • {servico}
-                    </Text>
-                  ))}
+                  {posto.services.map((servico, index) => {
+                    // Se for objeto, pegar o tipo do serviço
+                    const servicoTexto = typeof servico === 'object' ? servico.type : servico;
+                    return (
+                      <Text key={index} fontSize="sm" color="gray.400">
+                        • {servicoTexto}
+                      </Text>
+                    );
+                  })}
                 </VStack>
               </Box>
             )}
@@ -193,9 +197,21 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                 <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
                   Horário de Funcionamento
                 </Text>
-                <Text fontSize="sm" color="gray.400">
-                  {posto.opening_hours}
-                </Text>
+                {Array.isArray(posto.opening_hours) ? (
+                  <VStack align="stretch" spacing={1}>
+                    {posto.opening_hours.map((horario, index) => (
+                      <Text key={index} fontSize="sm" color="gray.400">
+                        {horario.day}: {horario.open} - {horario.close}
+                      </Text>
+                    ))}
+                  </VStack>
+                ) : (
+                  <Text fontSize="sm" color="gray.400">
+                    {typeof posto.opening_hours === 'object' 
+                      ? JSON.stringify(posto.opening_hours) 
+                      : posto.opening_hours}
+                  </Text>
+                )}
               </Box>
             )}
           </VStack>
