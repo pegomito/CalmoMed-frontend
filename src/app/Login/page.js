@@ -24,20 +24,21 @@ export default function LoginPage() {
   };
 
   return (
-    <Box
-      w="100%"
-      h="100vh"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      filter="contrast(95%)"
-      bgGradient="to-r"
-      gradientFrom="blue.900"
-      gradientTo="black"
-      bgSize="cover"
-      bgPosition="center"
-      bgRepeat="no-repeat"
-    >
+    <>
+      <Box
+        w="100%"
+        h="100vh"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        filter="contrast(95%)"
+        bgGradient="to-r"
+        gradientFrom="blue.900"
+        gradientTo="black"
+        bgSize="cover"
+        bgPosition="center"
+        bgRepeat="no-repeat"
+      >
       <Box 
         w="50%" 
         display="flex" 
@@ -126,7 +127,8 @@ export default function LoginPage() {
           </VStack>
         </Box>
       </Box>
+      </Box>
       <Toaster />
-    </Box>
+    </>
   );
 }
