@@ -19,15 +19,15 @@ export default function Sidebar({ activeSection, onSectionChange }) {
       label: "Unidades",
       icon: FaHospital,
     },
-    {
-      id: "perfil",
-      label: "Meu Perfil",
-      icon: FaUser,
-    },
+    
     {
       id: "dashboard",
       label: "Dashboard",
       icon: LuChartNoAxesCombined,
+    },{
+      id: "perfil",
+      label: "Meu Perfil",
+      icon: FaUser,
     },
   ];
 
