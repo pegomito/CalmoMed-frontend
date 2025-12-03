@@ -10,10 +10,15 @@ import {
   GridItem
 } from "@chakra-ui/react";
 import { toaster, Toaster } from "@/components/ui/toaster";
+import { useMemo } from "react";
 
 export default function PostoDetailsModal({ isOpen, onClose, posto }) {
 
   if (!posto) return null;
+
+  // Verificar se o decaimento foi aplicado
+  const temDecaimento = posto.decaimento && posto.decaimento.aplicado;
+  const filaAtual = posto.crowding_info?.reportedQueue || 0;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -119,10 +124,22 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
               <GridItem>
                 <Box bg="gray.700" p={3} borderRadius="md">
-                  <Text fontSize="sm" color="gray.400" mb={1}>Pessoas na Fila</Text>
-                  <Text fontSize="2xl" color="blue.400" fontWeight="bold">
-                    {posto.crowding_info?.reportedQueue || 0}
+                  <Text fontSize="sm" color="gray.400" mb={1}>
+                    Pessoas na Fila
+                    {temDecaimento && (
+                      <Badge ml={2} colorScheme="green" fontSize="xs">
+                        Tempo Real
+                      </Badge>
+                    )}
                   </Text>
+                  <Text fontSize="2xl" color="blue.400" fontWeight="bold">
+                    {filaAtual}
+                  </Text>
+                  {temDecaimento && posto.decaimento.pessoasAtendidas > 0 && (
+                    <Text fontSize="xs" color="green.400" mt={1}>
+                      -{posto.decaimento.pessoasAtendidas} atendidas
+                    </Text>
+                  )}
                 </Box>
               </GridItem>
               <GridItem>
@@ -137,8 +154,8 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                 <Box bg="gray.700" p={3} borderRadius="md">
                   <Text fontSize="sm" color="gray.400" mb={1}>Última Atualização</Text>
                   <Text fontSize="sm" color="purple.400" fontWeight="bold">
-                    {posto.crowding_info?.lastUpdate 
-                      ? new Date(posto.crowding_info.lastUpdate).toLocaleString('pt-BR', {
+                    {posto.crowding_info?.lastUpdated 
+                      ? new Date(posto.crowding_info.lastUpdated).toLocaleString('pt-BR', {
                           day: '2-digit',
                           month: '2-digit',
                           hour: '2-digit',
@@ -146,6 +163,11 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                         })
                       : 'Sem dados'}
                   </Text>
+                  {temDecaimento && (
+                    <Text fontSize="xs" color="gray.400" mt={1}>
+                      há {posto.decaimento.minutosDesdeAtualizacao} min
+                    </Text>
+                  )}
                 </Box>
               </GridItem>
               <GridItem>
@@ -157,6 +179,22 @@ export default function PostoDetailsModal({ isOpen, onClose, posto }) {
                 </Box>
               </GridItem>
             </Grid>
+
+            {temDecaimento && posto.decaimento.pessoasAtendidas > 0 && (
+              <Box bg="green.900" p={3} borderRadius="md" borderLeft="4px solid" borderColor="green.400">
+                <HStack spacing={2} align="start">
+                  <Text fontSize="lg">⏱️</Text>
+                  <VStack align="start" spacing={0}>
+                    <Text fontSize="sm" fontWeight="bold" color="green.200">
+                      Decaimento Aplicado
+                    </Text>
+                    <Text fontSize="xs" color="gray.300">
+                      {posto.decaimento.pessoasAtendidas} pessoa(s) atendida(s) nos últimos {posto.decaimento.minutosDesdeAtualizacao} minutos (estimativa: 15min/pessoa)
+                    </Text>
+                  </VStack>
+                </HStack>
+              </Box>
+            )}
 
             {posto.specialties && Array.isArray(posto.specialties) && posto.specialties.length > 0 && (
               <Box bg="gray.700" p={4} borderRadius="md">

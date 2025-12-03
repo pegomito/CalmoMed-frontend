@@ -13,6 +13,7 @@ import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster, Toaster } from "@/components/ui/toaster";
 import Dashboard from "@/components/Dashboard";
+import { aplicarDecaimentoEmLote } from "@/utils/ocupacaoDecaimento";
 
 export const dynamic = 'force-dynamic';
 
@@ -37,34 +38,70 @@ function LobbyContent() {
   }, [searchParams]);
 
   useEffect(() => {
+    // Buscar dados imediatamente ao carregar
     fetchPostos();
+
+    // 🔄 POLLING: Atualizar dados a cada 1 minuto (60.000 ms)
+    const pollingInterval = setInterval(() => {
+      fetchPostos(true); // true = é atualização em background
+    }, 60000);
+
+    // Limpar interval quando o componente desmontar
+    return () => {
+      clearInterval(pollingInterval);
+    };
   }, []);
 
-  const fetchPostos = async () => {
+  const fetchPostos = async (isBackgroundUpdate = false) => {
     try {
-      setLoading(true);
+      // Só mostrar loading na busca inicial, não nas atualizações em background
+      if (!isBackgroundUpdate) {
+        setLoading(true);
+      }
+      
       const data = await postosService.getAll();
       setPostos(data);
       setSearchPostos(data); // Atualizar contexto de busca
+      
+      // Log silencioso para atualizações em background
+      if (isBackgroundUpdate) {
+        console.log('🔄 Dados atualizados via polling:', new Date().toLocaleTimeString());
+      }
     } catch (error) {
       console.error("Erro ao buscar postos:", error);
-      toaster.create({
-        title: "Erro",
-        description: error.message || "Erro ao carregar postos de saúde",
-        type: "error",
-      });
+      
+      // Só mostrar toast de erro na busca inicial, não em polling
+      if (!isBackgroundUpdate) {
+        toaster.create({
+          title: "Erro",
+          description: error.message || "Erro ao carregar postos de saúde",
+          type: "error",
+        });
+      }
     } finally {
-      setLoading(false);
+      if (!isBackgroundUpdate) {
+        setLoading(false);
+      }
     }
   };
 
+  // Aplicar decaimento aos postos para cálculos em tempo real
+  const postosComDecaimento = useMemo(() => {
+    return aplicarDecaimentoEmLote(postos);
+  }, [postos]);
+
   const markers = useMemo(() => {
-    return postos.map((posto) => {
-      const occupancy = posto.crowding_info?.occupancyPercentage || 0;
+    return postosComDecaimento.map((posto) => {
+      // Usar o número de pessoas na fila APÓS decaimento
+      const filaAtual = posto.crowding_info?.reportedQueue || 0;
       let lotacao = "baixa";
-      if (occupancy >= 90) lotacao = "crítica";
-      else if (occupancy >= 70) lotacao = "alta";
-      else if (occupancy >= 40) lotacao = "média";
+      
+      // Determinar lotação baseado no número de pessoas
+      if (filaAtual > 15) {
+        lotacao = "alta";
+      } else if (filaAtual > 5) {
+        lotacao = "média";
+      }
 
       return {
         id: posto.id,
@@ -75,11 +112,11 @@ function LobbyContent() {
         },
         address: posto.address,
         lotacao,
-        filaAtual: posto.crowding_info?.reportedQueue || 0,
+        filaAtual: filaAtual,
         avaliacao: posto.rating || 0,
       };
     });
-  }, [postos]);
+  }, [postosComDecaimento]);
 
   return (
     <>
@@ -114,7 +151,7 @@ function LobbyContent() {
                       <Text color="gray.300" fontSize="lg" mb={4}>
                         Visualize a localização das Unidades de Saúde de sua Região
                       </Text>
-                      <OccupancyStats postos={postos} />
+                      <OccupancyStats postos={postosComDecaimento} />
                     </Box>
 
                     <Box flex="1" borderRadius="xl" overflow="hidden">
@@ -153,7 +190,7 @@ function LobbyContent() {
                     </Box>
 
                     <Box flex="1" overflowY="auto">
-                      <PostosList postos={postos} onUpdate={fetchPostos} />
+                      <PostosList postos={postosComDecaimento} onUpdate={fetchPostos} />
                     </Box>
                   </VStack>
                 )}
