@@ -75,7 +75,7 @@ export default function PostosList({ postos = [], onUpdate }) {
 
       <VStack spacing={4} align='stretch' mb={5}>
         <Input
-          placeholder='Buscar posto...'
+          placeholder='Buscar unidade...'
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           bg='rgba(255, 255, 255, 0.08)'
@@ -166,7 +166,7 @@ export default function PostosList({ postos = [], onUpdate }) {
       <Box flex='1' overflowY='auto'>
         {filteredPostos.length === 0 ? (
           <Text color='gray.400' textAlign='center' py={10}>
-            Nenhum posto encontrado com os filtros aplicados.
+            Nenhuma unidade encontrada com os filtros aplicados.
           </Text>
         ) : (
           <Grid

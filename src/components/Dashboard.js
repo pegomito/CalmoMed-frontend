@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { occupancyService, postosService } from "@/services/api";
 
 const Dashboard = () => {
+  console.log('🎯 DASHBOARD COMPONENT LOADED!');
+  
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
   const [isClient, setIsClient] = useState(false);
@@ -31,6 +33,7 @@ const Dashboard = () => {
 
   // Garante que só renderiza no cliente
   useEffect(() => {
+    console.log('🔧 Dashboard useEffect - setIsClient(true)');
     setIsClient(true);
   }, []);
 
@@ -64,6 +67,8 @@ const Dashboard = () => {
     const fetchOccupancyData = async () => {
       if (!isClient) return;
       
+      console.log('🚀 fetchOccupancyData iniciado', { timeFilter, selectedPosto, chartType });
+      
       // Loading inicial vs loading do gráfico
       const isInitialLoad = occupancyData.length === 0;
       if (isInitialLoad) {
@@ -77,23 +82,29 @@ const Dashboard = () => {
         const customStart = useCustomDate && appliedStartDate ? appliedStartDate : null;
         const customEnd = useCustomDate && appliedEndDate ? appliedEndDate : null;
         
+        console.log('📊 Buscando stats...', { timeFilter, selectedPosto, customStart, customEnd });
+        
         const stats = await occupancyService.getOccupancyStats(
           timeFilter, 
           selectedPosto, 
           customStart, 
           customEnd
         );
+        
+        console.log('✅ Stats recebidas:', stats);
+        
         setOccupancyData(stats);
         
         // Buscar estatísticas gerais se estiver no modo comparação
         if (chartType === 'comparacao') {
           const genStats = await occupancyService.getGeneralStats(customStart, customEnd);
+          console.log('✅ Stats gerais recebidas:', genStats);
           setGeneralStats(genStats);
         }
         
         setError(null);
       } catch (err) {
-        console.error('Erro ao carregar dados:', err);
+        console.error('❌ Erro ao carregar dados:', err);
         setError('Erro ao carregar dados de ocupação');
       } finally {
         if (isInitialLoad) {
@@ -101,6 +112,7 @@ const Dashboard = () => {
         } else {
           setChartLoading(false);
         }
+        console.log('✅ Loading finalizado');
       }
     };
 
@@ -325,6 +337,7 @@ const Dashboard = () => {
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            backgroundColor: 'transparent',
             plugins: {
               title: {
                 display: true,
@@ -418,6 +431,7 @@ const Dashboard = () => {
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            backgroundColor: 'transparent',
             plugins: {
               title: {
                 display: true,
@@ -497,6 +511,7 @@ const Dashboard = () => {
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            backgroundColor: 'transparent',
             plugins: {
               title: {
                 display: true,
@@ -623,6 +638,7 @@ const Dashboard = () => {
 
   // Só renderiza se estiver no cliente
   if (!isClient) {
+    console.log('⏳ Dashboard aguardando isClient...');
     return (
       <VStack spacing={6} align="stretch" h="100%">
         <Box>
@@ -636,6 +652,8 @@ const Dashboard = () => {
       </VStack>
     );
   }
+
+  console.log('🎨 Dashboard RENDERIZANDO - isClient=true, loading=', loading);
 
   if (loading) {
     return (
@@ -671,7 +689,7 @@ const Dashboard = () => {
   const stats = getStatistics();
 
   return (
-    <VStack spacing={6} align="stretch" h="100%">
+    <VStack spacing={6} align="stretch" w="100%" bg="rgba(30, 48, 63, 1)" p={6} minH="100%">
       <Box>
         <Text fontSize="3xl" fontWeight="bold" color="white" mb={2}>
           Dashboard Analítico

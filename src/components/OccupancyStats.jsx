@@ -38,7 +38,7 @@ export default function OccupancyStats({ postos }) {
         >
           <VStack align="start" spacing={1}>
             <Text fontSize="sm" color="blue.300">
-              Total de Postos
+              Total de Unidades
             </Text>
             <Text fontSize="3xl" fontWeight="bold" color="blue.400">
               {stats.total}

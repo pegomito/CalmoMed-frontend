@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState, Suspense } from "react";
 import LoginInput from "@/components/LoginInput";
 import RegisterInput from "@/components/RegisterInput";
+import { Toaster } from "@/components/ui/toaster";
 
 export const dynamic = 'force-dynamic';
 
@@ -131,12 +132,15 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <Box w="100%" h="100vh" bg="linear-gradient(135deg, #38B2AC 0%, #1A365D 100%)" display="flex" alignItems="center" justifyContent="center">
-        <Text color="white" fontSize="xl">Carregando...</Text>
-      </Box>
-    }>
-      <LoginContent />
-    </Suspense>
+    <>
+      <Suspense fallback={
+        <Box w="100%" h="100vh" bg="linear-gradient(135deg, #38B2AC 0%, #1A365D 100%)" display="flex" alignItems="center" justifyContent="center">
+          <Text color="white" fontSize="xl">Carregando...</Text>
+        </Box>
+      }>
+        <LoginContent />
+      </Suspense>
+      <Toaster />
+    </> 
   );
 }

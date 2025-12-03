@@ -29,7 +29,7 @@ export default function PostoCard({ posto, onUpdate }) {
       
       toaster.create({
         title: "Sucesso!",
-        description: "Posto excluído com sucesso.",
+        description: "Unidade excluída com sucesso.",
         type: "success",
       });
 
@@ -37,7 +37,7 @@ export default function PostoCard({ posto, onUpdate }) {
     } catch (error) {
       toaster.create({
         title: "Erro",
-        description: error.message || "Erro ao excluir posto.",
+        description: error.message || "Erro ao excluir unidade.",
         type: "error",
       });
     } finally {
@@ -105,7 +105,7 @@ export default function PostoCard({ posto, onUpdate }) {
               color="blue.400"
               _hover={{ bg: "blue.500", color: "white" }}
               onClick={handleEdit}
-              aria-label="Editar posto"
+              aria-label="Editar unidade"
             >
               <MdEdit size={18} />
             </IconButton>
@@ -117,7 +117,7 @@ export default function PostoCard({ posto, onUpdate }) {
               onClick={handleDelete}
               loading={isDeleting}
               disabled={isDeleting}
-              aria-label="Excluir posto"
+              aria-label="Excluir unidade"
             >
               <FaTrash size={16} />
             </IconButton>

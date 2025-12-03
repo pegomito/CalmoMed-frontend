@@ -17,9 +17,9 @@ export default function FixBar() {
     setMounted(true);
   }, []);
 
-  const filteredSuggestions = postos.filter(posto =>
+  const filteredSuggestions = mounted ? postos.filter(posto =>
     posto.name?.toLowerCase().includes(localSearchTerm.toLowerCase()) && localSearchTerm.length > 0
-  );
+  ) : [];
 
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
@@ -43,6 +43,10 @@ export default function FixBar() {
     setLocalSearchTerm(e.target.value);
     setShowSuggestions(e.target.value.length > 0);
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <Box 
@@ -83,7 +87,7 @@ export default function FixBar() {
             pr={12}
             h="40px"
             fontSize="md"
-            placeholder="Buscar postos de saúde..."
+            placeholder="Buscar unidades de saúde..."
             _placeholder={{ color: "rgba(255, 255, 255, 0.7)" }}
             bg="rgba(255, 255, 255, 0.15)"
             border="1px solid rgba(255, 255, 255, 0.3)"
@@ -112,7 +116,7 @@ export default function FixBar() {
             
           </Button>
           
-          {mounted && showSuggestions && filteredSuggestions.length > 0 && (
+          {showSuggestions && filteredSuggestions.length > 0 && (
             <Box
               position="absolute"
               top="100%"

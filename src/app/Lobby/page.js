@@ -12,6 +12,7 @@ import UserProfile from "@/components/UserProfile";
 import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster, Toaster } from "@/components/ui/toaster";
+import Dashboard from "@/components/Dashboard";
 
 export const dynamic = 'force-dynamic';
 
@@ -94,15 +95,15 @@ function LobbyContent() {
         w="100%"
         h="100vh"
         background="rgba(30, 48, 63, 1)"
-        pl="70px"
-        pt="80px"
+        pl="70px" 
+        pt="70px"
       >
         <Box h="100%" display="flex" flexDirection="column" p={6}>
             {loading ? (
               <VStack spacing={4} align="center" justify="center" h="100%">
                 <Spinner size="xl" color="teal.500" />
                 <Text color="white" fontSize="lg">
-                  Carregando postos de saúde...
+                  Carregando unidades de saúde...
                 </Text>
               </VStack>
             ) : (
@@ -160,6 +161,12 @@ function LobbyContent() {
                 {sidebarSection === "perfil" && (
                   <Box h="100%" overflowY="auto">
                     <UserProfile />
+                  </Box>
+                )}
+
+                {sidebarSection === "dashboard" && (
+                  <Box h="100%" w="100%" bg="rgba(30, 48, 63, 1)" overflowY="auto">
+                    <Dashboard />
                   </Box>
                 )}
                 

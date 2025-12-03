@@ -73,24 +73,7 @@ export default function GoogleMap({
         const mapInstance = new Map(mapRef.current, {
           center,
           zoom,
-          mapId: 'DEMO_MAP_ID',
-          styles: [
-            {
-              "featureType": "all",
-              "elementType": "geometry.fill",
-              "stylers": [{"weight": "2.00"}]
-            },
-            {
-              "featureType": "all",
-              "elementType": "geometry.stroke",
-              "stylers": [{"color": "#9c9c9c"}]
-            },
-            {
-              "featureType": "all",
-              "elementType": "labels.text.fill",
-              "stylers": [{"color": "#5e5e5e"}]
-            }
-          ]
+          mapId: 'DEMO_MAP_ID'
         });
 
         setMap(mapInstance);
