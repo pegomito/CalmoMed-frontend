@@ -197,6 +197,47 @@ export const occupancyService = {
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao buscar relatórios do posto' };
     }
+  },
+
+  // Buscar estatísticas de ocupação por período
+  async getOccupancyStats(period = 'hour', postoId = null, startDate = null, endDate = null) {
+    try {
+      const params = new URLSearchParams({ period });
+      if (postoId && postoId !== 'geral') {
+        params.append('postoId', postoId);
+      }
+      if (startDate) {
+        params.append('startDate', startDate);
+      }
+      if (endDate) {
+        params.append('endDate', endDate);
+      }
+      const response = await axios.get(`/api/occupancy-reports/stats?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Erro ao buscar estatísticas' };
+    }
+  },
+
+  // Buscar estatísticas gerais de todos os postos
+  async getGeneralStats(startDate = null, endDate = null) {
+    try {
+      const params = new URLSearchParams();
+      if (startDate) {
+        params.append('startDate', startDate);
+      }
+      if (endDate) {
+        params.append('endDate', endDate);
+      }
+      const queryString = params.toString();
+      const url = queryString 
+        ? `/api/occupancy-reports/general-stats?${queryString}`
+        : '/api/occupancy-reports/general-stats';
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Erro ao buscar estatísticas gerais' };
+    }
   }
 };
 

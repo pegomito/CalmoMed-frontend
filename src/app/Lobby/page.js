@@ -12,6 +12,7 @@ import UserProfile from "@/components/UserProfile";
 import { SearchProvider, useSearch } from "@/contexts/SearchContext";
 import { postosService } from "@/services/api";
 import { toaster, Toaster } from "@/components/ui/toaster";
+import Dashboard from "@/components/Dashboard";
 
 function LobbyContent() {
   const [sidebarSection, setSidebarSection] = useState("mapa");
@@ -83,7 +84,7 @@ function LobbyContent() {
 
       <Box
         w="100%"
-        h="100vh"
+        h="100%"
         background="rgba(30, 48, 63, 1)"
         pl="70px"
         pt="80px"
@@ -150,6 +151,14 @@ function LobbyContent() {
                   <Box h="100%" overflowY="auto">
                     <UserProfile />
                   </Box>
+                )}
+
+                {sidebarSection === "dashboard" && (
+                  <VStack spacing={4} align="stretch" h="100%">
+                    
+                      <Dashboard />
+                    
+                  </VStack>
                 )}
                 
               </>
