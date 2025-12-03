@@ -3,76 +3,54 @@ import axios from '../utils/axios';
 const TOKEN_KEY = 'calmomed_token';
 const USER_KEY = 'calmomed_user';
 
-// Serviço de Autenticação
 export const authService = {
-  // Login
   async login(email, password) {
     try {
       const response = await axios.post('/api/auth/login', { email, password });
       const { token, user } = response.data;
-      
-      // Armazenar token e usuário no localStorage
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
-      
-      // Adicionar token ao header padrão do axios
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
       return { token, user };
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao fazer login' };
     }
   },
 
-  // Registro
   async register(name, email, password, cpf) {
     try {
       const response = await axios.post('/api/auth/register', {
-        name,
-        email,
-        password,
-        cpf,
-        role: 'user'
+        name, email, password, cpf, role: 'user'
       });
       const { token, user } = response.data;
-      
-      // Armazenar token e usuário no localStorage
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
-      
-      // Adicionar token ao header padrão do axios
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
       return { token, user };
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao cadastrar' };
     }
   },
 
-  // Logout
   logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     delete axios.defaults.headers.common['Authorization'];
   },
 
-  // Obter token armazenado
   getToken() {
     return localStorage.getItem(TOKEN_KEY);
   },
 
-  // Obter usuário armazenado
   getUser() {
     const userStr = localStorage.getItem(USER_KEY);
     return userStr ? JSON.parse(userStr) : null;
   },
 
-  // Verificar se está autenticado
   isAuthenticated() {
     return !!this.getToken();
   },
 
-  // Obter perfil do usuário
   async getProfile() {
     try {
       const response = await axios.get('/api/auth/profile');
@@ -82,7 +60,6 @@ export const authService = {
     }
   },
 
-  // Inicializar token no axios (chamar ao carregar app)
   initializeAuth() {
     const token = this.getToken();
     if (token) {
@@ -90,7 +67,6 @@ export const authService = {
     }
   },
 
-  // Solicitar recuperação de senha (envia link com token por email)
   async forgotPassword(email) {
     try {
       const response = await axios.post('/api/auth/forgot-password', { email });
@@ -100,13 +76,9 @@ export const authService = {
     }
   },
 
-  // Redefinir senha com token JWT
   async resetPassword(token, newPassword) {
     try {
-      const response = await axios.post('/api/auth/reset-password', { 
-        token, 
-        newPassword 
-      });
+      const response = await axios.post('/api/auth/reset-password', { token, newPassword });
       return response.data;
     } catch (error) {
       throw error.response?.data || { message: 'Erro ao redefinir senha' };
@@ -114,9 +86,7 @@ export const authService = {
   }
 };
 
-// Serviço de Postos
 export const postosService = {
-  // Listar todos os postos
   async getAll() {
     try {
       const response = await axios.get('/api/postos');
@@ -126,7 +96,6 @@ export const postosService = {
     }
   },
 
-  // Buscar posto por ID
   async getById(id) {
     try {
       const response = await axios.get(`/api/postos/${id}`);
@@ -136,7 +105,6 @@ export const postosService = {
     }
   },
 
-  // Criar novo posto (admin)
   async create(postoData) {
     try {
       const response = await axios.post('/api/postos', postoData);
@@ -146,7 +114,6 @@ export const postosService = {
     }
   },
 
-  // Atualizar posto (admin)
   async update(id, postoData) {
     try {
       const response = await axios.patch(`/api/postos/${id}`, postoData);
@@ -156,7 +123,6 @@ export const postosService = {
     }
   },
 
-  // Deletar posto (admin)
   async delete(id) {
     try {
       const response = await axios.delete(`/api/postos/${id}`);
