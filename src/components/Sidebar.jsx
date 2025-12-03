@@ -3,6 +3,7 @@ import { Box, VStack, Text, Flex } from "@chakra-ui/react";
 import { useState } from "react";
 import { FaMapMarkedAlt, FaHospital, FaUser } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
+import { LuChartNoAxesCombined } from "react-icons/lu";
 
 export default function Sidebar({ activeSection, onSectionChange }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -22,6 +23,11 @@ export default function Sidebar({ activeSection, onSectionChange }) {
       id: "perfil",
       label: "Meu Perfil",
       icon: FaUser,
+    },
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: LuChartNoAxesCombined,
     },
   ];
 
