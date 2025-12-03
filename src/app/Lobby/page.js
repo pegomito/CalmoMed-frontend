@@ -117,12 +117,14 @@ function LobbyContent() {
                     </Box>
 
                     <Box flex="1" borderRadius="xl" overflow="hidden">
-                      <GoogleMap
-                        center={{ lat: -27.0945, lng: -52.6166 }}
-                        zoom={13}
-                        height="100%"
-                        markers={markers}
-                      />
+                      {mounted && (
+                        <GoogleMap
+                          center={{ lat: -27.0945, lng: -52.6166 }}
+                          zoom={13}
+                          height="100%"
+                          markers={markers}
+                        />
+                      )}
                     </Box>
                   </VStack>
                 )}

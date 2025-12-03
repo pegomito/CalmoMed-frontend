@@ -17,9 +17,14 @@ export default function GoogleMap({
   const [userLocation, setUserLocation] = useState(null);
   const [expandedMarker, setExpandedMarker] = useState(null);
   const [markerElements, setMarkerElements] = useState([]);
+  const [mounted, setMounted] = useState(false);
   const AdvancedMarkerRef = useRef(null);
   const { highlightedMarker, setMapInstance } = useSearch();
   const mapInstanceRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const style = document.createElement('style');
@@ -511,6 +516,14 @@ export default function GoogleMap({
             Verifique se a API Key está configurada corretamente no arquivo .env.local
           </Text>
         </VStack>
+      </Box>
+    );
+  }
+
+  if (!mounted) {
+    return (
+      <Box h={height} display="flex" alignItems="center" justifyContent="center" bg="gray.800" borderRadius="lg">
+        <Spinner size="xl" color="teal.500" />
       </Box>
     );
   }
