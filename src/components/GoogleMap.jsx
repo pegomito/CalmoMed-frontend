@@ -543,7 +543,7 @@ export default function GoogleMap({
           zIndex="10"
           spacing={2}
         >
-          {/*
+          
           <Button
             size="sm"
             colorScheme="teal"
@@ -553,7 +553,7 @@ export default function GoogleMap({
           >
             Minha Localização
           </Button>
-          */}
+         
         </HStack> 
       )}
       
